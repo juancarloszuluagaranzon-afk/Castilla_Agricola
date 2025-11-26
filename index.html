@@ -56,10 +56,8 @@ body {
 </head>
 
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden">
-  <!-- Fondo decorativo -->
   <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-teal-50 via-white to-slate-100 dark:from-slate-800 dark:via-slate-900 dark:to-black -z-10"></div>
 
-  <!-- Banner de instalación -->
   <div id="installBanner" class="install-banner" style="display:none">
     <div class="font-semibold mb-2">📱 Instalar App</div>
     <div class="text-sm text-slate-300 mb-3">Instala la aplicación para uso offline</div>
@@ -67,26 +65,18 @@ body {
     <button onclick="dismissInstall()" class="secondary">Más tarde</button>
   </div>
 
-  <!-- Contenedor principal -->
   <main class="w-full max-w-lg text-center bg-white dark:bg-slate-800/70 backdrop-blur-lg rounded-2xl shadow-xl p-10 border border-slate-200 dark:border-slate-700 relative">
     
-   <!-- Logo -->
-<div class="flex justify-center mb-6">
-  <div class="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 
-              rounded-full bg-gradient-to-tr from-teal-500 to-teal-300 
-              flex items-center justify-center shadow-lg animate-pulse-slow">
-    
-    <img src="icon-512.png" 
-         alt="Castilla Agrícola" 
-         class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28">
-  </div>
-</div>
+   <div class="flex justify-center mb-8">
+      <img src="icon-512.png" 
+           alt="Castilla Agrícola" 
+           class="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 animate-pulse-slow object-contain">
+    </div>
 
     <h1 class="text-3xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">Castilla Agrícola</h1>
     <h2 class="text-lg font-medium text-slate-600 dark:text-slate-300 mb-3">Maestro de Suertes · Transformación Digital</h2>
     <span class="inline-block bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 px-4 py-1 rounded-full text-sm font-semibold mb-8">🌱 Innovando el campo</span>
 
-    <!-- Estado de la instalación -->
     <div id="installStatus" class="mb-6 p-4 bg-slate-100 dark:bg-slate-700 rounded-lg text-sm">
       <div class="flex items-center justify-center gap-2">
         <span id="statusIcon" class="material-symbols-outlined text-teal-500">sync</span>
@@ -94,7 +84,6 @@ body {
       </div>
     </div>
 
-    <!-- Botones principales -->
     <div class="flex flex-col gap-4">
       <button onclick="window.location.href='maestro.html'" class="w-full py-3 bg-gradient-to-r from-teal-600 to-teal-400 hover:from-teal-500 hover:to-teal-300 text-white font-bold rounded-lg shadow-md transition-transform hover:scale-[1.02]">
         📋 Abrir Maestro
@@ -109,7 +98,6 @@ body {
       </button>
     </div>
 
-    <!-- Características -->
     <div class="mt-10 grid grid-cols-3 gap-4 text-center">
       <div class="flex flex-col items-center gap-2">
         <span class="material-symbols-outlined text-teal-500 text-3xl">bolt</span>
@@ -126,12 +114,10 @@ body {
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
     © 2025 Castilla Agrícola S.A.S. — <span class="font-semibold text-teal-500">v1.7.6</span>
   </footer>
 
-  <!-- Service Worker + Clear Cache -->
   <script>
 // ==============================
 // 🔧 CONFIGURACIÓN
@@ -435,9 +421,3 @@ window.addEventListener('offline', () => {
   </script>
 </body>
 </html>
-
-
-
-
-
-
