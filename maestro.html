@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <link rel="manifest" href="manifest.json">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
 <title>Castilla Agrícola – Maestro de Suertes</title>
 <style>
 :root {
@@ -108,7 +108,7 @@ th {
   margin-bottom:16px;
   border-radius:4px;
 }
-.update-banner button, .error button {
+.update-banner button, .error button, #pagination button {
   margin-left:12px;
   background:var(--accent);
   color:white;
@@ -117,9 +117,13 @@ th {
   border-radius:6px;
   cursor:pointer;
 }
-.update-banner button:hover, .error button:hover {
+.update-banner button:hover, .error button:hover, #pagination button:hover {
   opacity:0.9;
 }
+#pagination button.primary { /* Estilo base para los botones de paginación */
+  margin: 0;
+}
+
 @media (max-width:600px) {
   input {
     padding:6px;
@@ -180,7 +184,8 @@ th {
 // =======================
 const APP_VERSION = 'v1.7.9';
 const CSV_FILE = 'maestro.csv';
-const CACHE_NAME = 'riopaila-maestro-v1.7.6';
+// ⚠️ CORRECCIÓN CRÍTICA: Nombre de caché consistente con index.html (Castilla v1.7.9)
+const CACHE_NAME = `castilla-maestro-${APP_VERSION}`; 
 let HEADERS = [], ROWS = [];
 let currentPage = 1, pageSize = 25;
 let newWorkerWaiting = null;
@@ -205,39 +210,37 @@ if ('serviceWorker' in navigator) {
     })
     .catch(err => console.error('[SW] Error al registrar:', err));
 
+  // Manejar el mensaje SKIP_WAITING del Service Worker para forzar la recarga
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     console.log('[SW] Nueva versión activada → recargando...');
-    setTimeout(() => window.location.reload(), 1000);
+    setTimeout(() => window.location.reload(true), 1000); // El 'true' fuerza la recarga desde el servidor si es necesario
   });
 }
 
 function updateApp() {
-  if (newWorkerWaiting) newWorkerWaiting.postMessage({ type: 'SKIP_WAITING' });
+  if (newWorkerWaiting) {
+    newWorkerWaiting.postMessage({ type: 'SKIP_WAITING' });
+  } else {
+    // Si no hay SW esperando, simplemente recargar para forzar la verificación.
+    window.location.reload(true);
+  }
 }
 
 // =======================
-// CARGA DEL CSV - ESTRATEGIA MEJORADA
+// CARGA DEL CSV - ESTRATEGIA OPTIMIZADA (Confía en el SW)
 // =======================
 async function loadCSV() {
-  // Mostrar que estamos intentando cargar
   document.getElementById('loadingMsg').innerHTML = 
-    'Cargando datos...<br><small>Verificando conexión y caché</small>';
+    'Cargando datos...<br><small>El Service Worker maneja la caché</small>';
 
   try {
-    console.log('[CSV] 🔄 Intentando cargar desde red...');
+    // CRÍTICO: Usamos fetch normal. El Service Worker (SW) interceptará esta petición
+    // y aplicará la estrategia Cache First/Network Second.
+    const response = await fetch(CSV_FILE);
     
-    // Intentar con timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-    
-    const response = await fetch(`${CSV_FILE}?v=${Date.now()}`, {
-      cache: 'no-store',
-      signal: controller.signal
-    });
-    
-    clearTimeout(timeoutId);
-    
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Error al cargar el CSV: HTTP ${response.status}`);
+    }
     
     const text = await response.text();
     if (!text || text.trim().length === 0) {
@@ -245,64 +248,22 @@ async function loadCSV() {
     }
     
     parseCSV(text);
-    console.log('[CSV] ✅ Cargado desde red correctamente');
-    document.getElementById('offlineBanner').style.display = 'none';
+    console.log('[CSV] ✅ Datos cargados con éxito (Red o Caché vía SW)');
     
-  } catch (error) {
-    console.warn('[CSV] 🌐 Red falló:', error.message, '- Buscando en caché...');
-    
-    try {
-      // Buscar en caché de forma más agresiva
-      let cached = await caches.match(CSV_FILE);
-      
-      // Si no encontramos, intentar con diferentes URLs
-      if (!cached) {
-        cached = await caches.match('/maestro.csv');
-      }
-      if (!cached) {
-        cached = await caches.match('./maestro.csv');
-      }
-      
-      if (cached) {
-        const text = await cached.text();
-        if (text && text.trim().length > 0) {
-          parseCSV(text);
-          console.log('[CSV] ✅ Cargado desde caché correctamente');
-          document.getElementById('offlineBanner').style.display = 'block';
-          return;
-        }
-      }
-      
-      // Último intento: buscar en cualquier caché
-      const cacheNames = await caches.keys();
-      for (const cacheName of cacheNames) {
-        const cache = await caches.open(cacheName);
-        const keys = await cache.keys();
-        const csvRequest = keys.find(req => 
-          req.url.includes('maestro.csv') || 
-          req.url.endsWith('/maestro.csv')
-        );
-        
-        if (csvRequest) {
-          const cached = await cache.match(csvRequest);
-          if (cached) {
-            const text = await cached.text();
-            if (text && text.trim().length > 0) {
-              parseCSV(text);
-              console.log('[CSV] ✅ Cargado desde caché alternativa:', cacheName);
-              document.getElementById('offlineBanner').style.display = 'block';
-              return;
-            }
-          }
-        }
-      }
-      
-      throw new Error('Sin conexión y sin datos en caché.');
-      
-    } catch (err) {
-      console.error('[CSV] ❌ Error crítico:', err);
-      showError(err.message);
+    // El banner offline se muestra/oculta basado en el evento 'online'/'offline' de la ventana
+    if (!navigator.onLine) {
+        document.getElementById('offlineBanner').style.display = 'block';
+    } else {
+        document.getElementById('offlineBanner').style.display = 'none';
     }
+
+  } catch (error) {
+    // Si falla el fetch aquí, significa que:
+    // 1. La URL es incorrecta.
+    // 2. El Service Worker no está instalado o falló.
+    // 3. El archivo no existe ni en red ni en caché.
+    console.error('[CSV] ❌ Error crítico en fetch:', error.message);
+    showError('No se pudo cargar el archivo maestro.csv. Sin conexión y sin caché disponible.');
   }
 }
 
@@ -416,89 +377,19 @@ async function clearCacheAndReload() {
 }
 
 // =======================
-// VERIFICACIÓN DE INSTALACIÓN
-// =======================
-async function verifyInstallation() {
-  console.log('🔍 Verificando instalación...');
-  
-  // Verificar si el CSV está en caché
-  try {
-    const cacheNames = await caches.keys();
-    console.log('📂 Cachés disponibles:', cacheNames);
-    
-    for (const cacheName of cacheNames) {
-      const cache = await caches.open(cacheName);
-      const keys = await cache.keys();
-      const csvCached = keys.some(req => req.url.includes('maestro.csv'));
-      
-      if (csvCached) {
-        console.log('✅ CSV encontrado en caché:', cacheName);
-        console.log('🗂️ Archivos en caché:', keys.map(k => new URL(k.url).pathname));
-        break;
-      }
-    }
-  } catch (err) {
-    console.error('❌ Error verificando caché:', err);
-  }
-}
-
-// =======================
-// FORZAR PRECARGA AL ABRIR
-// =======================
-async function forcePreload() {
-  console.log('🚀 Forzando precarga de archivos...');
-  
-  try {
-    // Enviar mensaje al Service Worker para precargar
-    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: 'PRELOAD_CRITICAL'
-      });
-    }
-    
-    // Precargar directamente también
-    const criticalFiles = ['maestro.csv', 'service-worker.js'];
-    
-    for (const file of criticalFiles) {
-      try {
-        await fetch(file + '?preload=' + Date.now());
-        console.log('✅ Precargado:', file);
-      } catch (err) {
-        console.warn('⚠️ No se pudo precargar:', file);
-      }
-    }
-  } catch (err) {
-    console.error('❌ Error en precarga forzada:', err);
-  }
-}
-
-// =======================
-// VERIFICAR CONEXIÓN
-// =======================
-function checkConnection() {
-  if (!navigator.onLine) {
-    console.log('🌐 Modo offline detectado');
-    document.getElementById('offlineBanner').style.display = 'block';
-  }
-}
-
-// =======================
 // INICIAR
 // =======================
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 Iniciando aplicación...');
-  checkConnection();
   loadCSV();
-  
-  // Precargar archivos después de un breve delay
-  setTimeout(forcePreload, 1000);
-  setTimeout(verifyInstallation, 2000);
 });
 
 // Escuchar cambios de conexión
 window.addEventListener('online', function() {
   console.log('🌐 Conexión restaurada');
   document.getElementById('offlineBanner').style.display = 'none';
+  // Opcional: Recargar los datos para obtener la última versión
+  // loadCSV(); 
 });
 
 window.addEventListener('offline', function() {
