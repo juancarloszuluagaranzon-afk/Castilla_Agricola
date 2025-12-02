@@ -2,496 +2,344 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#0ea5a4">
+<meta name="description" content="Maestro de Suertes - Castilla Agrícola">
 <link rel="manifest" href="manifest.json">
-<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
-<title>Castilla Agrícola – Maestro de Suertes</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
-
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Castilla Agrícola – Maestro</title>
 <style>
-/* ========================
-   VARIABLES Y BASE
-   ======================== */
-:root {
-  --font:'Manrope', Arial, Helvetica, sans-serif;
-  --bg:#f8fafc; /* Slate-50 */
-  --accent:#0ea5a4; /* Teal-500 */
-  --accent-dark:#0f766e; /* Teal-700 */
-  --header-bg:#ffffff;
-  --text-primary:#0f172a;
-  --text-secondary:#475569;
-  --border:#e2e8f0;
-}
-body {
-  margin:0;
-  font-family:var(--font);
-  background:var(--bg);
-  color:var(--text-primary);
-  line-height:1.5;
-}
+  :root { --bg:#f8fafc; --accent:#0ea5a4; --text:#0f172a; --header-bg:#ffffff; }
+  body { margin:0; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing: antialiased; }
+  
+  /* Header estático y limpio */
+  header { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--header-bg); position:sticky; top:0; z-index:100; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  header img.logo { width:40px; height:40px; object-fit:contain; }
+  header .info { display:flex; flex-direction:column; }
+  header .title { font-size:1rem; font-weight:700; color:#1e293b; }
+  header .version { font-size:0.75rem; color:#64748b; }
 
-/* ========================
-   HEADER
-   ======================== */
-header {
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding:12px 16px;
-  background:var(--header-bg);
-  border-bottom:1px solid var(--border);
-  box-shadow:0 2px 4px rgba(0,0,0,0.05);
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-header img.logo {
-  width:40px;
-  height:40px;
-  object-fit:contain;
-  border-radius:8px;
-  transition:transform 0.2s;
-}
-header img.logo:hover {
-  transform:scale(1.05);
-}
-header .title {
-  font-size:1.2rem;
-  font-weight:800;
-  color:var(--text-primary);
-}
-header .update {
-  font-size:0.75rem;
-  color:var(--text-secondary);
-  font-weight:400;
-}
+  /* Contenedor principal */
+  .container { padding:16px; max-width: 1200px; margin: 0 auto; }
 
-/* ========================
-   CONTROLES Y BÚSQUEDA (CORRECCIÓN DE ANCHO AQUÍ)
-   ======================== */
-.container {
-  padding:16px;
-}
-.controls {
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  margin-bottom:20px;
-}
-input#searchInput {
-  /* Nuevo: Máximo ancho para no ser 100% en desktop */
-  max-width: 400px; 
-  padding:12px 16px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  width:100%;
-  box-shadow:0 1px 3px rgba(0,0,0,0.05);
-  font-size:1rem;
-  transition:border-color 0.2s, box-shadow 0.2s;
-}
-input#searchInput:focus {
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(14, 165, 164, 0.2);
-  outline:none;
-}
-.controls label {
-  font-weight:700;
-  color:var(--text-primary);
-}
+  /* Controles y Búsqueda */
+  .controls { margin-bottom:16px; }
+  input { width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1; font-size:16px; box-sizing: border-box; transition: border 0.2s; }
+  input:focus { outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px rgba(14, 165, 164, 0.1); }
 
-/* ========================
-   TABLA
-   ======================== */
-.table-wrap {
-  overflow-x:auto;
-  background:#fff;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
-  padding:0;
-}
-table {
-  border-collapse:collapse;
-  width:100%;
-  min-width:800px;
-}
-th, td {
-  padding:12px 16px;
-  border-bottom:1px solid #f1f5f9; /* Slate-100 */
-  white-space:nowrap;
-  text-align:left;
-  font-size:14px;
-}
-th {
-  /* CORRECCIÓN DE ENCABEZADO REMONTADO AQUÍ */
-  z-index: 5; /* Asegura que esté por encima del tbody */
-  background:#f9fafb; /* Fondo sólido para tapar el contenido */
-  position:sticky;
-  top:64px; /* Ajuste para que se pegue debajo del header fijo */
-  font-weight:700;
-  color:var(--text-secondary);
-  text-transform:uppercase;
-  font-size:12px;
-}
-#maestro tbody tr:hover {
-  background:#f0fdfa; /* Teal-50 */
-  cursor:default;
-}
+  /* Tabla Responsiva */
+  .table-container { background:#fff; border-radius:10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow:hidden; display:none; }
+  .table-scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  th { background:#f1f5f9; color:#475569; font-weight:600; text-align:left; padding:12px; white-space:nowrap; position:sticky; top:0; }
+  td { padding:10px 12px; border-bottom:1px solid #f1f5f9; color:#334155; white-space:nowrap; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover { background-color: #f8fafc; }
 
-/* ========================
-   PAGINATION
-   ======================== */
-#pagination {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:12px;
-  margin:20px 0;
-  padding:0 16px;
-}
-#pagination button {
-  background:var(--accent);
-  color:white;
-  border:none;
-  padding:10px 18px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:700;
-  transition:background-color 0.2s, transform 0.1s;
-}
-#pagination button:hover:not(:disabled) {
-  background:var(--accent-dark);
-  transform:translateY(-1px);
-}
-#pagination button:disabled {
-  background:#cbd5e1; /* Slate-300 */
-  cursor:not-allowed;
-}
-#pageInfo {
-  font-weight:600;
-  color:var(--text-secondary);
-  font-size:14px;
-}
+  /* Pagination */
+  #pagination { display:none; justify-content:center; align-items:center; gap:16px; margin-top:20px; padding-bottom: 20px; }
+  button.nav-btn { background:var(--accent); color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px; }
+  button.nav-btn:disabled { background:#cbd5e1; cursor:not-allowed; }
+  
+  /* Banners de Estado */
+  .banner { padding:12px; margin-bottom:16px; border-radius:8px; font-size:14px; display:none; animation: fadeIn 0.3s; }
+  .update-banner { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; display:flex; justify-content:space-between; align-items:center; }
+  .offline-banner { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
+  .error-banner { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; text-align: center; }
+  
+  .btn-update { background:#d97706; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; margin-left: 10px; }
 
-/* ========================
-   BANNERS Y ESTADOS
-   ======================== */
-.loading {
-  text-align:center;
-  padding:40px;
-  color:var(--text-secondary);
-  font-size:1.1rem;
-}
-.error, .update-banner, .offline-banner {
-  padding:16px;
-  border-radius:8px;
-  margin-bottom:16px;
-  font-size:0.95rem;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.error {
-  background:#fee2e2; /* Red-100 */
-  color:#b91c1c; /* Red-700 */
-  border:1px solid #fca5a5; /* Red-300 */
-}
-.update-banner {
-  background:#fffbeb; /* Amber-100 */
-  color:#b45309; /* Amber-700 */
-  border:1px solid #fcd34d; /* Amber-300 */
-}
-.offline-banner {
-  background:#eff6ff; /* Blue-100 */
-  color:#1d4ed8; /* Blue-700 */
-  border:1px solid #93c5fd; /* Blue-300 */
-}
-.error button {
-  background:#b91c1c;
-}
-.error button:hover {
-  background:#991b1b;
-}
+  /* Loading */
+  .loading { text-align:center; padding:40px; color:#64748b; font-size: 1.1rem; }
+  .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(14,165,164,0.3); border-radius:50%; border-top-color:var(--accent); animation: spin 1s ease-in-out infinite; margin-bottom: 10px; }
 
-@media (max-width:600px) {
-  header {
-    gap:10px;
-    padding:10px 12px;
-  }
-  header img.logo {
-    width:36px;
-    height:36px;
-  }
-  header .title {
-    font-size:1rem;
-  }
-  input#searchInput {
-    padding:10px 12px;
-    font-size:0.95rem;
-    /* En móvil, volvemos al 100% */
-    max-width: 100%; 
-  }
-  th, td {
-    padding:10px 12px;
-    font-size:12px;
-  }
-  th {
-    top:56px; /* Ajuste para header más pequeño */
-  }
-}
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
+
 <header>
-  <a href="index.html" title="Volver al inicio">
-    <img src="icon-192.png" class="logo" alt="logo" onerror="this.style.display='none'">
-  </a>
-  <div>
-    <div class="title">Castilla Agrícola – Maestro de Suertes</div>
-    <div class="update">Última actualización: 11 de noviembre de 2025</div>
+  <img src="icon-192.png" class="logo" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzBlYTVhNCIgZD0iTTEyIDJMNCA1djZWMTEuNWMwIDUuMjUgMy43NSA5Ljc1IDggMTAuNWM0LjI1LS43NSA4LTUuMjUgOC0xMC41VjVMMTIgMnpNMTAgMTdMNiAxM2wxLjQtMS40IDEuNiAxLjYgNS42LTUuNiAxLjQgMS40LTEwIDEweiIvPjwvc3ZnPg=='">
+  <div class="info">
+    <div class="title">Maestro de Suertes</div>
+    <div class="version" id="appVersion">v1.7.9 • Castilla Agrícola</div>
   </div>
 </header>
 
 <div class="container">
-  <div id="updateBanner" class="update-banner" style="display:none">
-    <span>⚠️ Hay una nueva versión disponible.</span>
-    <button onclick="updateApp()">Actualizar ahora</button>
+  
+  <div id="updateBanner" class="banner update-banner">
+    <span>✨ Nueva versión disponible</span>
+    <button class="btn-update" onclick="applyUpdate()">Actualizar</button>
+  </div>
+  
+  <div id="offlineBanner" class="banner offline-banner">
+    📡 <strong>Modo Offline:</strong> Mostrando datos guardados.
   </div>
 
-  <div id="offlineBanner" class="offline-banner" style="display:none">
-    📡 <strong>Modo offline:</strong> Mostrando datos en caché.
-  </div>
+  <div id="errorMsg" class="banner error-banner"></div>
 
   <div class="controls">
-    <label for="searchInput">Buscar:</label>
-    <input id="searchInput" placeholder="Buscar por suerte, cultivo, código...">
+    <input id="searchInput" type="search" placeholder="🔍 Buscar suerte, zona, código..." autocomplete="off">
   </div>
 
-  <div id="loadingMsg" class="loading">Cargando datos...</div>
-  <div id="errorMsg" class="error" style="display:none"></div>
-
-  <div class="table-wrap" style="display:none">
-    <table id="maestro">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
+  <div id="loadingMsg" class="loading">
+    <div class="spinner"></div><br>Cargando datos...
   </div>
 
-  <div id="pagination" style="display:none">
-    <button id="prevPage" class="primary">← Anterior</button>
-    <span id="pageInfo"></span>
-    <button id="nextPage" class="primary">Siguiente →</button>
+  <div class="table-container">
+    <div class="table-scroll">
+      <table id="maestro">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
+
+  <div id="pagination">
+    <button id="prevPage" class="nav-btn">Anterior</button>
+    <span id="pageInfo" style="font-size:14px;color:#475569;"></span>
+    <button id="nextPage" class="nav-btn">Siguiente</button>
+  </div>
+
 </div>
 
 <script>
 // =======================
-// CONFIGURACIÓN PRINCIPAL
+// CONFIGURACIÓN
 // =======================
-const APP_VERSION = 'v1.7.9';
-const CSV_FILE = 'maestro.csv';
-// 🟢 CRÍTICO: Nombre de caché consistente
-const CACHE_NAME = `castilla-maestro-${APP_VERSION}`; 
-let HEADERS = [], ROWS = [];
-let currentPage = 1, pageSize = 25;
-let newWorkerWaiting = null;
+const CONFIG = {
+  version: 'v1.7.9',
+  csvFile: 'maestro.csv',
+  pageSize: 25
+};
+
+let STATE = {
+  headers: [],
+  rows: [],
+  filteredRows: [],
+  currentPage: 1,
+  newWorker: null
+};
 
 // =======================
-// SERVICE WORKER
+// SERVICE WORKER (Gestión de actualizaciones)
 // =======================
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
+  navigator.serviceWorker.register('./service-worker.js')
     .then(reg => {
-      console.log('[SW] Registrado correctamente:', reg.scope);
+      // Detectar si hay una actualización esperando
+      if (reg.waiting) showUpdateBanner(reg.waiting);
 
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            newWorkerWaiting = newWorker;
-            document.getElementById('updateBanner').style.display = 'flex'; // Usamos flex para el nuevo display
+            showUpdateBanner(newWorker);
           }
         });
       });
-    })
-    .catch(err => console.error('[SW] Error al registrar:', err));
+    });
 
-  // Manejar el mensaje SKIP_WAITING
+  let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    console.log('[SW] Nueva versión activada → recargando...');
-    setTimeout(() => window.location.reload(true), 1000); 
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
   });
 }
 
-function updateApp() {
-  if (newWorkerWaiting) {
-    newWorkerWaiting.postMessage({ type: 'SKIP_WAITING' });
-  } else {
-    window.location.reload(true);
+function showUpdateBanner(worker) {
+  STATE.newWorker = worker;
+  document.getElementById('updateBanner').style.display = 'flex';
+}
+
+function applyUpdate() {
+  if (STATE.newWorker) {
+    STATE.newWorker.postMessage({ type: 'SKIP_WAITING' });
   }
 }
 
 // =======================
-// CARGA DEL CSV - ESTRATEGIA OPTIMIZADA
+// LÓGICA DE DATOS
 // =======================
-async function loadCSV() {
-  document.getElementById('loadingMsg').innerHTML = 
-    'Cargando datos...<br><small>El Service Worker maneja la caché</small>';
+
+async function initApp() {
+  checkConnection();
+  window.addEventListener('online', checkConnection);
+  window.addEventListener('offline', checkConnection);
 
   try {
-    // El Service Worker interceptará esto para Cache First
-    const response = await fetch(CSV_FILE); 
+    // Intentamos Fetch normal. 
+    // El Service Worker interceptará esto automáticamente.
+    // Si hay internet -> Baja el nuevo y actualiza caché.
+    // Si no hay internet -> El SW devuelve el caché.
+    const response = await fetch(CONFIG.csvFile);
     
-    if (!response.ok) {
-      throw new Error(`Error al cargar el CSV: HTTP ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Error ${response.status}`);
     
     const text = await response.text();
-    if (!text || text.trim().length === 0) {
-      throw new Error('CSV vacío o inválido');
-    }
+    processData(text);
     
-    parseCSV(text);
-    console.log('[CSV] ✅ Datos cargados con éxito');
-    
-    if (!navigator.onLine) {
-        document.getElementById('offlineBanner').style.display = 'flex';
-    } else {
-        document.getElementById('offlineBanner').style.display = 'none';
-    }
-
   } catch (error) {
-    console.error('[CSV] ❌ Error crítico en fetch:', error.message);
-    showError('No se pudo cargar el archivo maestro.csv. Sin conexión y sin caché disponible.');
+    console.error('Fallo carga:', error);
+    // Si llegamos aquí, falló la red Y falló el caché del Service Worker.
+    // Intentamos un rescate manual del caché por si acaso.
+    tryFallbackCache();
   }
 }
 
-function showError(message) {
-  document.getElementById('loadingMsg').style.display = 'none';
-  const errDiv = document.getElementById('errorMsg');
-  errDiv.style.display = 'flex';
-  errDiv.innerHTML = `
-    <span>
-      <strong>Error:</strong> ${message}<br>
-      <small>Verifica tu conexión a internet o contacta al administrador.</small>
-    </span>
-    <div>
-      <button onclick="location.reload()">Reintentar</button>
-      <button onclick="clearCacheAndReload()" style="margin-left: 8px; background: #64748b;">Limpiar Caché</button>
-    </div>
-  `;
+async function tryFallbackCache() {
+  try {
+    const cache = await caches.match(CONFIG.csvFile);
+    if (cache) {
+      const text = await cache.text();
+      console.log('Recuperado mediante Fallback manual');
+      processData(text);
+      document.getElementById('offlineBanner').style.display = 'block';
+    } else {
+      showError('No se pudieron cargar los datos. Revisa tu conexión.');
+    }
+  } catch (e) {
+    showError('Error crítico: No hay datos disponibles.');
+  }
 }
 
-function parseCSV(text) {
-  const lines = text.split('\n').filter(line => line.trim());
-  if (lines.length === 0) {
-    throw new Error('El archivo CSV está vacío');
-  }
+function processData(csvText) {
+  if (!csvText.trim()) return showError('El archivo de datos está vacío.');
+
+  const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
+  if (lines.length < 2) return showError('Formato de archivo inválido.');
+
+  // Parser simple pero efectivo
+  const separator = lines[0].includes(';') ? ';' : ',';
+  STATE.headers = lines[0].split(separator).map(h => h.trim());
   
-  const sep = lines[0].includes(';') ? ';' : ',';
-  HEADERS = lines[0].split(sep).map(h => h.trim());
-  ROWS = lines.slice(1).map(line => line.split(sep).map(v => v.trim()))
-               .filter(row => row.some(cell => cell));
+  // Procesamos filas (optimizando memoria)
+  STATE.rows = [];
+  for(let i=1; i < lines.length; i++) {
+    const cells = lines[i].split(separator);
+    // Solo agregamos si la fila tiene datos coherentes
+    if (cells.length > 1) {
+      STATE.rows.push(cells.map(c => c.trim()));
+    }
+  }
 
+  // Inicializar vista
+  STATE.filteredRows = [...STATE.rows];
   document.getElementById('loadingMsg').style.display = 'none';
-  document.querySelector('.table-wrap').style.display = 'block';
+  document.querySelector('.table-container').style.display = 'block';
   document.getElementById('pagination').style.display = 'flex';
+  
   renderTable();
 }
 
 // =======================
-// RENDER DE LA TABLA
+// RENDERIZADO OPTIMIZADO
 // =======================
+
 function renderTable() {
   const tbody = document.querySelector('#maestro tbody');
   const thead = document.querySelector('#maestro thead');
-  const search = document.getElementById('searchInput').value.toLowerCase();
-
-  const filtered = ROWS.filter(r => r.some(v => String(v||'').toLowerCase().includes(search)));
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * pageSize;
-  const pageRows = filtered.slice(start, start + pageSize);
-
-  thead.innerHTML = '<tr>' + HEADERS.map(h => `<th>${h}</th>`).join('') + '</tr>';
-  tbody.innerHTML = pageRows.map(r => '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
-  document.getElementById('pageInfo').innerText = `Página ${currentPage} / ${totalPages} (${filtered.length} registros)`;
-  document.getElementById('prevPage').disabled = currentPage <= 1;
-  document.getElementById('nextPage').disabled = currentPage >= totalPages;
-}
-
-// =======================
-// EVENTOS DE INTERFAZ
-// =======================
-document.getElementById('searchInput').addEventListener('input', () => { 
-  currentPage = 1; 
-  renderTable(); 
-});
-
-document.getElementById('prevPage').addEventListener('click', () => { 
-  if (currentPage > 1) { 
-    currentPage--; 
-    renderTable(); 
-  } 
-});
-
-document.getElementById('nextPage').addEventListener('click', () => { 
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = ROWS.filter(r => r.some(v => String(v||'').toLowerCase().includes(search)));
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   
-  if (currentPage < totalPages) { 
-    currentPage++; 
-    renderTable(); 
-  } 
-});
-
-// =======================
-// FUNCIONES UTILITARIAS
-// =======================
-async function clearCacheAndReload() {
-  try {
-    console.log('🧹 Limpiando caché...');
-    
-    if ('serviceWorker' in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      for (const reg of regs) {
-        await reg.unregister();
-        console.log('🗑️ Service Worker eliminado:', reg.scope);
-      }
-    }
-
-    if ('caches' in window) {
-      const cacheNames = await caches.keys();
-      await Promise.all(cacheNames.map(name => caches.delete(name)));
-      console.log('🧾 Cachés eliminadas:', cacheNames);
-    }
-
-    localStorage.clear();
-    alert('✅ Caché limpiado correctamente. La aplicación se recargará.');
-    window.location.reload(true);
-  } catch (err) {
-    console.error('❌ Error al limpiar caché:', err);
-    alert('⚠️ Error al limpiar caché. Intenta cerrar y abrir la app nuevamente.');
+  // Render Headers (solo una vez)
+  if (!thead.hasChildNodes()) {
+    const tr = document.createElement('tr');
+    STATE.headers.forEach(h => {
+      const th = document.createElement('th');
+      th.textContent = h;
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr);
   }
+
+  // Paginación lógica
+  const totalPages = Math.ceil(STATE.filteredRows.length / CONFIG.pageSize) || 1;
+  if (STATE.currentPage > totalPages) STATE.currentPage = 1;
+  
+  const start = (STATE.currentPage - 1) * CONFIG.pageSize;
+  const pageData = STATE.filteredRows.slice(start, start + CONFIG.pageSize);
+
+  // Render Body usando DocumentFragment (Mejor rendimiento)
+  const fragment = document.createDocumentFragment();
+  
+  pageData.forEach(row => {
+    const tr = document.createElement('tr');
+    row.forEach(cell => {
+      const td = document.createElement('td');
+      td.textContent = cell;
+      tr.appendChild(td);
+    });
+    fragment.appendChild(tr);
+  });
+
+  tbody.innerHTML = ''; // Limpiar
+  tbody.appendChild(fragment); // Insertar de golpe
+
+  // Actualizar controles UI
+  document.getElementById('pageInfo').textContent = 
+    `Pág ${STATE.currentPage} de ${totalPages} (${STATE.filteredRows.length} registros)`;
+  
+  document.getElementById('prevPage').disabled = STATE.currentPage === 1;
+  document.getElementById('nextPage').disabled = STATE.currentPage >= totalPages;
 }
 
 // =======================
-// INICIAR
+// EVENTOS Y UTILIDADES
 // =======================
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 Iniciando aplicación...');
-  loadCSV();
+
+// Debounce para la búsqueda (Evita lentitud al escribir)
+let searchTimeout;
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const term = e.target.value.toLowerCase();
+    
+    // Filtrado
+    STATE.filteredRows = STATE.rows.filter(row => 
+      row.some(cell => cell.toLowerCase().includes(term))
+    );
+    
+    STATE.currentPage = 1;
+    renderTable();
+  }, 300); // Espera 300ms después de dejar de escribir
 });
 
-// Escuchar cambios de conexión
-window.addEventListener('online', function() {
-  console.log('🌐 Conexión restaurada');
-  document.getElementById('offlineBanner').style.display = 'none';
+document.getElementById('prevPage').addEventListener('click', () => {
+  if (STATE.currentPage > 1) {
+    STATE.currentPage--;
+    renderTable();
+    document.querySelector('.table-container').scrollTop = 0;
+  }
 });
 
-window.addEventListener('offline', function() {
-  console.log('🌐 Sin conexión');
-  document.getElementById('offlineBanner').style.display = 'flex'; // Usamos flex para el nuevo display
+document.getElementById('nextPage').addEventListener('click', () => {
+  const totalPages = Math.ceil(STATE.filteredRows.length / CONFIG.pageSize);
+  if (STATE.currentPage < totalPages) {
+    STATE.currentPage++;
+    renderTable();
+    document.querySelector('.table-container').scrollTop = 0;
+  }
 });
+
+function checkConnection() {
+  const banner = document.getElementById('offlineBanner');
+  banner.style.display = navigator.onLine ? 'none' : 'block';
+}
+
+function showError(msg) {
+  document.getElementById('loadingMsg').style.display = 'none';
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.innerHTML += '<br><br><button onclick="location.reload()" class="btn-update">Reintentar</button>';
+}
+
+// Arrancar
+document.addEventListener('DOMContentLoaded', initApp);
+
 </script>
 </body>
 </html>
