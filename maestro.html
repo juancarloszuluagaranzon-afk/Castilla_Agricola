@@ -66,7 +66,7 @@ header .update {
 }
 
 /* ========================
-   CONTROLES Y BÚSQUEDA
+   CONTROLES Y BÚSQUEDA (CORRECCIÓN DE ANCHO AQUÍ)
    ======================== */
 .container {
   padding:16px;
@@ -78,6 +78,8 @@ header .update {
   margin-bottom:20px;
 }
 input#searchInput {
+  /* Nuevo: Máximo ancho para no ser 100% en desktop */
+  max-width: 400px; 
   padding:12px 16px;
   border-radius:10px;
   border:1px solid var(--border);
@@ -119,9 +121,11 @@ th, td {
   font-size:14px;
 }
 th {
-  background:#f9fafb; /* Gray-50 */
+  /* CORRECCIÓN DE ENCABEZADO REMONTADO AQUÍ */
+  z-index: 5; /* Asegura que esté por encima del tbody */
+  background:#f9fafb; /* Fondo sólido para tapar el contenido */
   position:sticky;
-  top:64px; /* Ajuste para que se pegue debajo del header */
+  top:64px; /* Ajuste para que se pegue debajo del header fijo */
   font-weight:700;
   color:var(--text-secondary);
   text-transform:uppercase;
@@ -222,6 +226,8 @@ th {
   input#searchInput {
     padding:10px 12px;
     font-size:0.95rem;
+    /* En móvil, volvemos al 100% */
+    max-width: 100%; 
   }
   th, td {
     padding:10px 12px;
