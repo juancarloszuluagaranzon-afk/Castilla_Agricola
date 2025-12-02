@@ -5,64 +5,106 @@
 <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
 <title>Castilla Agrícola – Maestro de Suertes</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+
 <style>
+/* ========================
+   VARIABLES Y BASE
+   ======================== */
 :root {
-  --bg:#f7fafc;
-  --accent:#0ea5a4;
-  --header-bg:#e9eef0;
+  --font:'Manrope', Arial, Helvetica, sans-serif;
+  --bg:#f8fafc; /* Slate-50 */
+  --accent:#0ea5a4; /* Teal-500 */
+  --accent-dark:#0f766e; /* Teal-700 */
+  --header-bg:#ffffff;
+  --text-primary:#0f172a;
+  --text-secondary:#475569;
+  --border:#e2e8f0;
 }
 body {
   margin:0;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:var(--font);
   background:var(--bg);
-  color:#0f172a;
+  color:var(--text-primary);
+  line-height:1.5;
 }
+
+/* ========================
+   HEADER
+   ======================== */
 header {
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:16px;
   padding:12px 16px;
   background:var(--header-bg);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 2px 4px rgba(0,0,0,0.05);
   position:sticky;
   top:0;
   z-index:10;
 }
 header img.logo {
-  width:48px;
-  height:48px;
+  width:40px;
+  height:40px;
   object-fit:contain;
-  cursor:pointer;
+  border-radius:8px;
+  transition:transform 0.2s;
+}
+header img.logo:hover {
+  transform:scale(1.05);
 }
 header .title {
-  font-size:1.1rem;
-  font-weight:700;
+  font-size:1.2rem;
+  font-weight:800;
+  color:var(--text-primary);
 }
 header .update {
-  font-size:0.85rem;
-  color:#475569;
+  font-size:0.75rem;
+  color:var(--text-secondary);
+  font-weight:400;
 }
+
+/* ========================
+   CONTROLES Y BÚSQUEDA
+   ======================== */
 .container {
   padding:16px;
 }
 .controls {
   display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-bottom:12px;
-  align-items:center;
+  flex-direction:column;
+  gap:16px;
+  margin-bottom:20px;
 }
-input {
-  padding:8px;
-  border-radius:8px;
-  border:1px solid #e6e9ee;
-  flex:1;
-  min-width:200px;
+input#searchInput {
+  padding:12px 16px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  width:100%;
+  box-shadow:0 1px 3px rgba(0,0,0,0.05);
+  font-size:1rem;
+  transition:border-color 0.2s, box-shadow 0.2s;
 }
+input#searchInput:focus {
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(14, 165, 164, 0.2);
+  outline:none;
+}
+.controls label {
+  font-weight:700;
+  color:var(--text-primary);
+}
+
+/* ========================
+   TABLA
+   ======================== */
 .table-wrap {
   overflow-x:auto;
   background:#fff;
-  border-radius:8px;
-  padding:8px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  padding:0;
 }
 table {
   border-collapse:collapse;
@@ -70,68 +112,123 @@ table {
   min-width:800px;
 }
 th, td {
-  padding:8px;
-  border-bottom:1px solid #eef2f7;
+  padding:12px 16px;
+  border-bottom:1px solid #f1f5f9; /* Slate-100 */
   white-space:nowrap;
   text-align:left;
-  font-size:13px;
+  font-size:14px;
 }
 th {
-  background:#fbfeff;
+  background:#f9fafb; /* Gray-50 */
   position:sticky;
-  top:0;
-  font-weight:600;
+  top:64px; /* Ajuste para que se pegue debajo del header */
+  font-weight:700;
+  color:var(--text-secondary);
+  text-transform:uppercase;
+  font-size:12px;
 }
-.loading {
-  text-align:center;
-  padding:40px;
-  color:#64748b;
+#maestro tbody tr:hover {
+  background:#f0fdfa; /* Teal-50 */
+  cursor:default;
 }
-.error {
-  background:#fee;
-  color:#c00;
-  padding:12px;
-  border-radius:8px;
-  margin:16px;
+
+/* ========================
+   PAGINATION
+   ======================== */
+#pagination {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin:20px 0;
+  padding:0 16px;
 }
-.update-banner {
-  background:#fef3c7;
-  border-left:4px solid #f59e0b;
-  padding:12px;
-  margin-bottom:16px;
-  border-radius:4px;
-}
-.offline-banner {
-  background:#f0f9ff;
-  border-left:4px solid #0ea5e9;
-  padding:12px;
-  margin-bottom:16px;
-  border-radius:4px;
-}
-.update-banner button, .error button, #pagination button {
-  margin-left:12px;
+#pagination button {
   background:var(--accent);
   color:white;
   border:none;
-  padding:6px 10px;
-  border-radius:6px;
+  padding:10px 18px;
+  border-radius:8px;
   cursor:pointer;
+  font-weight:700;
+  transition:background-color 0.2s, transform 0.1s;
 }
-.update-banner button:hover, .error button:hover, #pagination button:hover {
-  opacity:0.9;
+#pagination button:hover:not(:disabled) {
+  background:var(--accent-dark);
+  transform:translateY(-1px);
 }
-#pagination button.primary { /* Estilo base para los botones de paginación */
-  margin: 0;
+#pagination button:disabled {
+  background:#cbd5e1; /* Slate-300 */
+  cursor:not-allowed;
+}
+#pageInfo {
+  font-weight:600;
+  color:var(--text-secondary);
+  font-size:14px;
+}
+
+/* ========================
+   BANNERS Y ESTADOS
+   ======================== */
+.loading {
+  text-align:center;
+  padding:40px;
+  color:var(--text-secondary);
+  font-size:1.1rem;
+}
+.error, .update-banner, .offline-banner {
+  padding:16px;
+  border-radius:8px;
+  margin-bottom:16px;
+  font-size:0.95rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.error {
+  background:#fee2e2; /* Red-100 */
+  color:#b91c1c; /* Red-700 */
+  border:1px solid #fca5a5; /* Red-300 */
+}
+.update-banner {
+  background:#fffbeb; /* Amber-100 */
+  color:#b45309; /* Amber-700 */
+  border:1px solid #fcd34d; /* Amber-300 */
+}
+.offline-banner {
+  background:#eff6ff; /* Blue-100 */
+  color:#1d4ed8; /* Blue-700 */
+  border:1px solid #93c5fd; /* Blue-300 */
+}
+.error button {
+  background:#b91c1c;
+}
+.error button:hover {
+  background:#991b1b;
 }
 
 @media (max-width:600px) {
-  input {
-    padding:6px;
-    font-size:14px;
+  header {
+    gap:10px;
+    padding:10px 12px;
+  }
+  header img.logo {
+    width:36px;
+    height:36px;
+  }
+  header .title {
+    font-size:1rem;
+  }
+  input#searchInput {
+    padding:10px 12px;
+    font-size:0.95rem;
   }
   th, td {
-    padding:6px;
+    padding:10px 12px;
     font-size:12px;
+  }
+  th {
+    top:56px; /* Ajuste para header más pequeño */
   }
 }
 </style>
@@ -149,16 +246,17 @@ th {
 
 <div class="container">
   <div id="updateBanner" class="update-banner" style="display:none">
-    ⚠️ Hay una nueva versión disponible. 
+    <span>⚠️ Hay una nueva versión disponible.</span>
     <button onclick="updateApp()">Actualizar ahora</button>
   </div>
 
   <div id="offlineBanner" class="offline-banner" style="display:none">
-    📡 <strong>Modo offline:</strong> Mostrando datos en caché. Algunos datos pueden no estar actualizados.
+    📡 <strong>Modo offline:</strong> Mostrando datos en caché.
   </div>
 
   <div class="controls">
-    <label>Buscar: <input id="searchInput" placeholder="Buscar..."></label>
+    <label for="searchInput">Buscar:</label>
+    <input id="searchInput" placeholder="Buscar por suerte, cultivo, código...">
   </div>
 
   <div id="loadingMsg" class="loading">Cargando datos...</div>
@@ -171,7 +269,7 @@ th {
     </table>
   </div>
 
-  <div id="pagination" style="display:none;justify-content:center;align-items:center;gap:12px;margin:16px">
+  <div id="pagination" style="display:none">
     <button id="prevPage" class="primary">← Anterior</button>
     <span id="pageInfo"></span>
     <button id="nextPage" class="primary">Siguiente →</button>
@@ -184,7 +282,7 @@ th {
 // =======================
 const APP_VERSION = 'v1.7.9';
 const CSV_FILE = 'maestro.csv';
-// ⚠️ CORRECCIÓN CRÍTICA: Nombre de caché consistente con index.html (Castilla v1.7.9)
+// 🟢 CRÍTICO: Nombre de caché consistente
 const CACHE_NAME = `castilla-maestro-${APP_VERSION}`; 
 let HEADERS = [], ROWS = [];
 let currentPage = 1, pageSize = 25;
@@ -203,17 +301,17 @@ if ('serviceWorker' in navigator) {
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
             newWorkerWaiting = newWorker;
-            document.getElementById('updateBanner').style.display = 'block';
+            document.getElementById('updateBanner').style.display = 'flex'; // Usamos flex para el nuevo display
           }
         });
       });
     })
     .catch(err => console.error('[SW] Error al registrar:', err));
 
-  // Manejar el mensaje SKIP_WAITING del Service Worker para forzar la recarga
+  // Manejar el mensaje SKIP_WAITING
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     console.log('[SW] Nueva versión activada → recargando...');
-    setTimeout(() => window.location.reload(true), 1000); // El 'true' fuerza la recarga desde el servidor si es necesario
+    setTimeout(() => window.location.reload(true), 1000); 
   });
 }
 
@@ -221,22 +319,20 @@ function updateApp() {
   if (newWorkerWaiting) {
     newWorkerWaiting.postMessage({ type: 'SKIP_WAITING' });
   } else {
-    // Si no hay SW esperando, simplemente recargar para forzar la verificación.
     window.location.reload(true);
   }
 }
 
 // =======================
-// CARGA DEL CSV - ESTRATEGIA OPTIMIZADA (Confía en el SW)
+// CARGA DEL CSV - ESTRATEGIA OPTIMIZADA
 // =======================
 async function loadCSV() {
   document.getElementById('loadingMsg').innerHTML = 
     'Cargando datos...<br><small>El Service Worker maneja la caché</small>';
 
   try {
-    // CRÍTICO: Usamos fetch normal. El Service Worker (SW) interceptará esta petición
-    // y aplicará la estrategia Cache First/Network Second.
-    const response = await fetch(CSV_FILE);
+    // El Service Worker interceptará esto para Cache First
+    const response = await fetch(CSV_FILE); 
     
     if (!response.ok) {
       throw new Error(`Error al cargar el CSV: HTTP ${response.status}`);
@@ -248,20 +344,15 @@ async function loadCSV() {
     }
     
     parseCSV(text);
-    console.log('[CSV] ✅ Datos cargados con éxito (Red o Caché vía SW)');
+    console.log('[CSV] ✅ Datos cargados con éxito');
     
-    // El banner offline se muestra/oculta basado en el evento 'online'/'offline' de la ventana
     if (!navigator.onLine) {
-        document.getElementById('offlineBanner').style.display = 'block';
+        document.getElementById('offlineBanner').style.display = 'flex';
     } else {
         document.getElementById('offlineBanner').style.display = 'none';
     }
 
   } catch (error) {
-    // Si falla el fetch aquí, significa que:
-    // 1. La URL es incorrecta.
-    // 2. El Service Worker no está instalado o falló.
-    // 3. El archivo no existe ni en red ni en caché.
     console.error('[CSV] ❌ Error crítico en fetch:', error.message);
     showError('No se pudo cargar el archivo maestro.csv. Sin conexión y sin caché disponible.');
   }
@@ -270,13 +361,16 @@ async function loadCSV() {
 function showError(message) {
   document.getElementById('loadingMsg').style.display = 'none';
   const errDiv = document.getElementById('errorMsg');
-  errDiv.style.display = 'block';
+  errDiv.style.display = 'flex';
   errDiv.innerHTML = `
-    <strong>Error:</strong> ${message}<br>
-    <small>Verifica tu conexión a internet o contacta al administrador.</small>
-    <br><br>
-    <button onclick="location.reload()">Reintentar</button>
-    <button onclick="clearCacheAndReload()" style="margin-left: 8px; background: #64748b;">Limpiar Caché</button>
+    <span>
+      <strong>Error:</strong> ${message}<br>
+      <small>Verifica tu conexión a internet o contacta al administrador.</small>
+    </span>
+    <div>
+      <button onclick="location.reload()">Reintentar</button>
+      <button onclick="clearCacheAndReload()" style="margin-left: 8px; background: #64748b;">Limpiar Caché</button>
+    </div>
   `;
 }
 
@@ -351,7 +445,6 @@ async function clearCacheAndReload() {
   try {
     console.log('🧹 Limpiando caché...');
     
-    // Eliminar Service Workers
     if ('serviceWorker' in navigator) {
       const regs = await navigator.serviceWorker.getRegistrations();
       for (const reg of regs) {
@@ -360,7 +453,6 @@ async function clearCacheAndReload() {
       }
     }
 
-    // Eliminar cachés
     if ('caches' in window) {
       const cacheNames = await caches.keys();
       await Promise.all(cacheNames.map(name => caches.delete(name)));
@@ -388,13 +480,11 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('online', function() {
   console.log('🌐 Conexión restaurada');
   document.getElementById('offlineBanner').style.display = 'none';
-  // Opcional: Recargar los datos para obtener la última versión
-  // loadCSV(); 
 });
 
 window.addEventListener('offline', function() {
   console.log('🌐 Sin conexión');
-  document.getElementById('offlineBanner').style.display = 'block';
+  document.getElementById('offlineBanner').style.display = 'flex'; // Usamos flex para el nuevo display
 });
 </script>
 </body>
