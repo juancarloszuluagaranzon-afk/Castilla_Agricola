@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1.7.9'; // He subido la versión para forzar la actualización
+const CACHE_VERSION = 'v1.8.1'; // He subido la versión para forzar la actualización
 const CACHE_NAME = `castilla-maestro-${CACHE_VERSION}`;
 const BASE = '/';
 
@@ -18,7 +18,7 @@ const CRITICAL_URLS = [
 // 1. INSTALAR – Cacheo inicial
 // ===============================
 self.addEventListener('install', event => {
-  console.log('[SW] Instalando versión', CACHE_VERSION);
+  console.log('[SW] Instalando sión', CACHE_SION);
 
   event.waitUntil(
     caches.open(CACHE_NAME)
