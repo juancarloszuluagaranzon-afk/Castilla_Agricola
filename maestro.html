@@ -1,469 +1,849 @@
 <!doctype html>
 <html lang="es">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#0ea5a4">
-<meta name="description" content="Maestro de Suertes - Castilla Agrícola">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="icon-192.png">
-<title>Castilla Agrícola – Maestro</title>
-<style>
-  :root { --bg:#f8fafc; --accent:#0ea5a4; --text:#0f172a; --header-bg:#ffffff; }
-  body { margin:0; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing: antialiased; }
-  
-  /* Header estático y limpio */
-  header { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--header-bg); position:sticky; top:0; z-index:100; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  header img.logo { width:40px; height:40px; object-fit:contain; }
-  header .info { display:flex; flex-direction:column; }
-  header .title { font-size:1rem; font-weight:700; color:#1e293b; }
-  header .version { font-size:0.75rem; color:#64748b; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#0ea5a4">
+  <meta name="description" content="Maestro de Suertes - Castilla Agrícola">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <title>Castilla Agrícola – Maestro</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --accent: #0ea5a4;
+      --text: #0f172a;
+      --header-bg: #ffffff;
+    }
 
-  /* Contenedor principal */
-  .container { padding:16px; max-width: 1200px; margin: 0 auto; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
 
-  /* Controles y Búsqueda */
-  .controls { margin-bottom:16px; }
-  input { width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1; font-size:16px; box-sizing: border-box; transition: border 0.2s; }
-  input:focus { outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px rgba(14, 165, 164, 0.1); }
+    /* Header estático y limpio */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--header-bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
-  /* Tabla Responsiva */
-  .table-container { background:#fff; border-radius:10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow:hidden; display:none; }
-  .table-scroll { overflow-x:auto; }
-  table { border-collapse:collapse; width:100%; font-size:13px; }
-  th { background:#f1f5f9; color:#475569; font-weight:600; text-align:left; padding:12px; white-space:nowrap; position:sticky; top:0; }
-  td { padding:10px 12px; border-bottom:1px solid #f1f5f9; color:#334155; white-space:nowrap; }
-  tr:last-child td { border-bottom:none; }
-  tr:hover { background-color: #f8fafc; }
-  
-  /* Columna de Edad con fondo verde claro */
-  td.edad-cell { background-color: #d1fae5; font-weight: 600; color: #065f46; }
-  th.edad-header { background-color: #a7f3d0; color: #065f46; }
+    header img.logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
 
-  /* Pagination */
-  #pagination { display:none; justify-content:center; align-items:center; gap:16px; margin-top:20px; padding-bottom: 20px; }
-  button.nav-btn { background:var(--accent); color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px; }
-  button.nav-btn:disabled { background:#cbd5e1; cursor:not-allowed; }
-  
-  /* Banners de Estado */
-  .banner { padding:12px; margin-bottom:16px; border-radius:8px; font-size:14px; display:none; animation: fadeIn 0.3s; }
-  .update-banner { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; display:flex; justify-content:space-between; align-items:center; }
-  .offline-banner { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
-  .error-banner { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; text-align: center; }
-  
-  .btn-update { background:#d97706; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; margin-left: 10px; }
+    header .info {
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* Loading */
-  .loading { text-align:center; padding:40px; color:#64748b; font-size: 1.1rem; }
-  .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(14,165,164,0.3); border-radius:50%; border-top-color:var(--accent); animation: spin 1s ease-in-out infinite; margin-bottom: 10px; }
+    header .title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
-</style>
+    header .version {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    /* Contenedor principal */
+    .container {
+      padding: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Controles y Búsqueda */
+    .controls {
+      margin-bottom: 16px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: border 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(14, 165, 164, 0.1);
+    }
+
+    /* Tabla Responsiva */
+    .table-container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: none;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* Columna de Edad con fondo verde claro */
+    td.edad-cell {
+      background-color: #d1fae5;
+      font-weight: 600;
+      color: #065f46;
+    }
+
+    th.edad-header {
+      background-color: #a7f3d0;
+      color: #065f46;
+    }
+
+    /* Pagination */
+    #pagination {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    button.nav-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    button.nav-btn:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    /* Banners de Estado */
+    .banner {
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .update-banner {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .offline-banner {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    .error-banner {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      text-align: center;
+    }
+
+    .btn-update {
+      background: #d97706;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #64748b;
+      font-size: 1.1rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(14, 165, 164, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      /* Scroll if too long */
+      overflow-y: auto;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .close-btn {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #64748b;
+      font-weight: bold;
+      font-size: 18px;
+      transition: background 0.2s;
+    }
+
+    .close-btn:hover {
+      background: #cbd5e1;
+      color: #334155;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f8fafc;
+    }
+
+    .detail-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .detail-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .detail-value {
+      font-size: 1rem;
+      color: #1e293b;
+      font-weight: 500;
+      word-break: break-word;
+      /* Prevent overflow on long texts */
+    }
+
+    /* Make rows look clickable */
+    tr.clickable-row {
+      cursor: pointer;
+    }
+
+    tr.clickable-row:hover {
+      background-color: #f1f5f9;
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <img src="icon-192.png" class="logo" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzBlYTVhNCIgZD0iTTEyIDJMNCA1djZWMTEuNWMwIDUuMjUgMy43NSA5Ljc1IDggMTAuNWM0LjI1LS43NSA4LTUuMjUgOC0xMC41VjVMMTIgMnpNMTAgMTdMNiAxM2wxLjQtMS40IDEuNiAxLjYgNS42LTUuNiAxLjQgMS40LTEwIDEweiIvPjwvc3ZnPg=='">
-  <div class="info">
-    <div class="title">Maestro de Suertes</div>
-    <div class="version" id="appVersion">v1.8.2 • Castilla Agrícola</div>
-  </div>
-</header>
+  <header>
+    <img src="icon-192.png" class="logo" alt="Logo"
+      onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzBlYTVhNCIgZD0iTTEyIDJMNCA1djZWMTEuNWMwIDUuMjUgMy43NSA5Ljc1IDggMTAuNWM0LjI1LS43NSA4LTUuMjUgOC0xMC41VjVMMTIgMnpNMTAgMTdMNiAxM2wxLjQtMS40IDEuNiAxLjYgNS42LTUuNiAxLjQgMS40LTEwIDEweiIvPjwvc3ZnPg=='">
+    <div class="info">
+      <div class="title">Maestro de Suertes</div>
+      <div class="version" id="appVersion">v1.8.2 • Castilla Agrícola</div>
+    </div>
+  </header>
 
-<div class="container">
-  
-  <div id="updateBanner" class="banner update-banner">
-    <span>✨ Nueva versión disponible</span>
-    <button class="btn-update" onclick="applyUpdate()">Actualizar</button>
-  </div>
-  
-  <div id="offlineBanner" class="banner offline-banner">
-    📡 <strong>Modo Offline:</strong> Mostrando datos guardados.
+  <div class="container">
+
+    <div id="updateBanner" class="banner update-banner">
+      <span>✨ Nueva versión disponible</span>
+      <button class="btn-update" onclick="applyUpdate()">Actualizar</button>
+    </div>
+
+    <div id="offlineBanner" class="banner offline-banner">
+      📡 <strong>Modo Offline:</strong> Mostrando datos guardados.
+    </div>
+
+    <div id="errorMsg" class="banner error-banner"></div>
+
+    <div class="controls">
+      <input id="searchInput" type="search" placeholder="🔍 Buscar suerte, zona, código..." autocomplete="off">
+    </div>
+
+    <div id="loadingMsg" class="loading">
+      <div class="spinner"></div><br>Cargando datos...
+    </div>
+
+    <div class="table-container">
+      <div class="table-scroll">
+        <table id="maestro">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="pagination">
+      <button id="prevPage" class="nav-btn">Anterior</button>
+      <span id="pageInfo" style="font-size:14px;color:#475569;"></span>
+      <button id="nextPage" class="nav-btn">Siguiente</button>
+    </div>
+
   </div>
 
-  <div id="errorMsg" class="banner error-banner"></div>
-
-  <div class="controls">
-    <input id="searchInput" type="search" placeholder="🔍 Buscar suerte, zona, código..." autocomplete="off">
-  </div>
-
-  <div id="loadingMsg" class="loading">
-    <div class="spinner"></div><br>Cargando datos...
-  </div>
-
-  <div class="table-container">
-    <div class="table-scroll">
-      <table id="maestro">
-        <thead></thead>
-        <tbody></tbody>
-      </table>
+  <!-- Modal Structure -->
+  <div id="detailModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Detalle de Suerte</h2>
+        <button class="close-btn" onclick="closeModal()">×</button>
+      </div>
+      <div id="modalBody" class="modal-body">
+        <!-- populated dynamically -->
+      </div>
     </div>
   </div>
 
-  <div id="pagination">
-    <button id="prevPage" class="nav-btn">Anterior</button>
-    <span id="pageInfo" style="font-size:14px;color:#475569;"></span>
-    <button id="nextPage" class="nav-btn">Siguiente</button>
-  </div>
+  <script>
+    // =======================
+    // CONFIGURACIÓN
+    // =======================
+    const CONFIG = {
+      version: 'v1.8.3',
+      csvFile: 'maestro.csv',
+      pageSize: 25
+    };
 
-</div>
+    let STATE = {
+      headers: [],
+      rows: [],
+      filteredRows: [],
+      currentPage: 1,
+      newWorker: null,
+      edadColumnIndex: -1 // Índice de la columna de edad
+    };
 
-<script>
-// =======================
-// CONFIGURACIÓN
-// =======================
-const CONFIG = {
-  version: 'v1.8.2',
-  csvFile: 'maestro.csv',
-  pageSize: 25
-};
+    // =======================
+    // SERVICE WORKER (Gestión de actualizaciones)
+    // =======================
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => {
+          // Detectar si hay una actualización esperando
+          if (reg.waiting) showUpdateBanner(reg.waiting);
 
-let STATE = {
-  headers: [],
-  rows: [],
-  filteredRows: [],
-  currentPage: 1,
-  newWorker: null,
-  edadColumnIndex: -1 // Índice de la columna de edad
-};
-
-// =======================
-// SERVICE WORKER (Gestión de actualizaciones)
-// =======================
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker.js')
-    .then(reg => {
-      // Detectar si hay una actualización esperando
-      if (reg.waiting) showUpdateBanner(reg.waiting);
-
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            showUpdateBanner(newWorker);
-          }
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateBanner(newWorker);
+              }
+            });
+          });
         });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
-    });
-
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) {
-      refreshing = true;
-      window.location.reload();
     }
-  });
-}
 
-function showUpdateBanner(worker) {
-  STATE.newWorker = worker;
-  document.getElementById('updateBanner').style.display = 'flex';
-}
-
-function applyUpdate() {
-  if (STATE.newWorker) {
-    STATE.newWorker.postMessage({ type: 'SKIP_WAITING' });
-  }
-}
-
-// =======================
-// LÓGICA DE DATOS
-// =======================
-
-// Función para parsear fechas en formato DD/MM/YYYY o similar
-function parseFecha(fechaStr) {
-  if (!fechaStr || fechaStr === '' || fechaStr === '-') return null;
-  
-  // Limpiar espacios
-  fechaStr = fechaStr.trim();
-  
-  let fecha;
-  
-  // Formato DD/MM/YYYY (el más común en tu CSV)
-  if (fechaStr.includes('/')) {
-    const parts = fechaStr.split('/');
-    if (parts.length === 3) {
-      const dia = parseInt(parts[0]);
-      const mes = parseInt(parts[1]);
-      const anio = parseInt(parts[2]);
-      fecha = new Date(anio, mes - 1, dia);
+    function showUpdateBanner(worker) {
+      STATE.newWorker = worker;
+      document.getElementById('updateBanner').style.display = 'flex';
     }
-  }
-  // Formato DD-MM-YYYY
-  else if (fechaStr.includes('-') && fechaStr.split('-')[0].length <= 2) {
-    const parts = fechaStr.split('-');
-    if (parts.length === 3) {
-      const dia = parseInt(parts[0]);
-      const mes = parseInt(parts[1]);
-      const anio = parseInt(parts[2]);
-      fecha = new Date(anio, mes - 1, dia);
+
+    function applyUpdate() {
+      if (STATE.newWorker) {
+        // Ocultar banner inmediatamente para dar feedback
+        document.getElementById('updateBanner').style.display = 'none';
+        STATE.newWorker.postMessage({ type: 'SKIP_WAITING' });
+      }
     }
-  }
-  // Formato YYYY-MM-DD (ISO)
-  else if (fechaStr.includes('-')) {
-    fecha = new Date(fechaStr);
-  }
-  
-  return (fecha && !isNaN(fecha.getTime())) ? fecha : null;
-}
 
-// Calcular edad en meses según la fórmula de Excel
-// =SI(VARIEDAD="RENOVACION";0;SI(FECHA_ULTIMO_CORTE>FECHA_SIEMBRA;(HOY()-FECHA_ULTIMO_CORTE)/(365,25/12);(HOY()-FECHA_SIEMBRA)/(365,25/12)))
-function calcularEdad(row, variedadIdx, fechaSiembraIdx, fechaUltimoCorteIdx) {
-  const variedad = row[variedadIdx]?.toUpperCase() || '';
-  
-  // Si es RENOVACION, edad = 0
-  if (variedad === 'RENOVACION' || variedad === 'RENOVACIÓN') {
-    return '0.0';
-  }
-  
-  const fechaSiembra = parseFecha(row[fechaSiembraIdx]);
-  if (!fechaSiembra) return '-';
-  
-  const hoy = new Date();
-  let fechaReferencia = fechaSiembra; // Por defecto, usamos fecha de siembra
-  
-  // Si existe columna de último corte y tiene fecha válida
-  if (fechaUltimoCorteIdx !== -1 && row[fechaUltimoCorteIdx]) {
-    const fechaUltimoCorte = parseFecha(row[fechaUltimoCorteIdx]);
-    
-    // Si fecha de último corte > fecha de siembra, usamos último corte
-    if (fechaUltimoCorte && fechaUltimoCorte > fechaSiembra) {
-      fechaReferencia = fechaUltimoCorte;
+    // =======================
+    // LÓGICA DE DATOS
+    // =======================
+
+    // Función para parsear fechas en formato DD/MM/YYYY o similar
+    function parseFecha(fechaStr) {
+      if (!fechaStr || fechaStr === '' || fechaStr === '-') return null;
+
+      // Limpiar espacios
+      fechaStr = fechaStr.trim();
+
+      let fecha;
+
+      // Formato DD/MM/YYYY (el más común en tu CSV)
+      if (fechaStr.includes('/')) {
+        const parts = fechaStr.split('/');
+        if (parts.length === 3) {
+          const dia = parseInt(parts[0]);
+          const mes = parseInt(parts[1]);
+          const anio = parseInt(parts[2]);
+          fecha = new Date(anio, mes - 1, dia);
+        }
+      }
+      // Formato DD-MM-YYYY
+      else if (fechaStr.includes('-') && fechaStr.split('-')[0].length <= 2) {
+        const parts = fechaStr.split('-');
+        if (parts.length === 3) {
+          const dia = parseInt(parts[0]);
+          const mes = parseInt(parts[1]);
+          const anio = parseInt(parts[2]);
+          fecha = new Date(anio, mes - 1, dia);
+        }
+      }
+      // Formato YYYY-MM-DD (ISO)
+      else if (fechaStr.includes('-')) {
+        fecha = new Date(fechaStr);
+      }
+
+      return (fecha && !isNaN(fecha.getTime())) ? fecha : null;
     }
-  }
-  
-  // Calcular diferencia en meses: (HOY - Fecha) / (365.25/12)
-  const diasDiferencia = (hoy - fechaReferencia) / (1000 * 60 * 60 * 24);
-  const meses = diasDiferencia / (365.25 / 12);
-  
-  return meses >= 0 ? meses.toFixed(1) : '0.0';
-}
 
-async function initApp() {
-  checkConnection();
-  window.addEventListener('online', checkConnection);
-  window.addEventListener('offline', checkConnection);
+    // Calcular edad en meses según la fórmula de Excel
+    // =SI(VARIEDAD="RENOVACION";0;SI(FECHA_ULTIMO_CORTE>FECHA_SIEMBRA;(HOY()-FECHA_ULTIMO_CORTE)/(365,25/12);(HOY()-FECHA_SIEMBRA)/(365,25/12)))
+    function calcularEdad(row, variedadIdx, fechaSiembraIdx, fechaUltimoCorteIdx) {
+      const variedad = row[variedadIdx]?.toUpperCase() || '';
 
-  try {
-    // Intentamos Fetch normal. 
-    // El Service Worker interceptará esto automáticamente.
-    // Si hay internet -> Baja el nuevo y actualiza caché.
-    // Si no hay internet -> El SW devuelve el caché.
-    const response = await fetch(CONFIG.csvFile);
-    
-    if (!response.ok) throw new Error(`Error ${response.status}`);
-    
-    const text = await response.text();
-    processData(text);
-    
-  } catch (error) {
-    console.error('Fallo carga:', error);
-    // Si llegamos aquí, falló la red Y falló el caché del Service Worker.
-    // Intentamos un rescate manual del caché por si acaso.
-    tryFallbackCache();
-  }
-}
+      // Si es RENOVACION, edad = 0
+      if (variedad === 'RENOVACION' || variedad === 'RENOVACIÓN') {
+        return '0.0';
+      }
 
-async function tryFallbackCache() {
-  try {
-    const cache = await caches.match(CONFIG.csvFile);
-    if (cache) {
-      const text = await cache.text();
-      console.log('Recuperado mediante Fallback manual');
-      processData(text);
-      document.getElementById('offlineBanner').style.display = 'block';
-    } else {
-      showError('No se pudieron cargar los datos. Revisa tu conexión.');
+      const fechaSiembra = parseFecha(row[fechaSiembraIdx]);
+      if (!fechaSiembra) return '-';
+
+      const hoy = new Date();
+      let fechaReferencia = fechaSiembra; // Por defecto, usamos fecha de siembra
+
+      // Si existe columna de último corte y tiene fecha válida
+      if (fechaUltimoCorteIdx !== -1 && row[fechaUltimoCorteIdx]) {
+        const fechaUltimoCorte = parseFecha(row[fechaUltimoCorteIdx]);
+
+        // Si fecha de último corte > fecha de siembra, usamos último corte
+        if (fechaUltimoCorte && fechaUltimoCorte > fechaSiembra) {
+          fechaReferencia = fechaUltimoCorte;
+        }
+      }
+
+      // Calcular diferencia en meses: (HOY - Fecha) / (365.25/12)
+      const diasDiferencia = (hoy - fechaReferencia) / (1000 * 60 * 60 * 24);
+      const meses = diasDiferencia / (365.25 / 12);
+
+      return meses >= 0 ? meses.toFixed(1) : '0.0';
     }
-  } catch (e) {
-    showError('Error crítico: No hay datos disponibles.');
-  }
-}
 
-function processData(csvText) {
-  if (!csvText.trim()) return showError('El archivo de datos está vacío.');
+    async function initApp() {
+      checkConnection();
+      window.addEventListener('online', checkConnection);
+      window.addEventListener('offline', checkConnection);
 
-  const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
-  if (lines.length < 2) return showError('Formato de archivo inválido.');
+      try {
+        // Intentamos Fetch normal. 
+        // El Service Worker interceptará esto automáticamente.
+        // Si hay internet -> Baja el nuevo y actualiza caché.
+        // Si no hay internet -> El SW devuelve el caché.
+        const response = await fetch(CONFIG.csvFile);
 
-  // Parser simple pero efectivo
-  const separator = lines[0].includes(';') ? ';' : ',';
-  STATE.headers = lines[0].split(separator).map(h => h.trim());
-  
-  // Identificar índices de columnas necesarias (nombres exactos de tu CSV)
-  const variedadIdx = STATE.headers.findIndex(h => 
-    h.toUpperCase().trim() === 'VARIEDAD'
-  );
-  const fechaSiembraIdx = STATE.headers.findIndex(h => 
-    h.toUpperCase().replace(/\s+/g, ' ').trim() === 'FECHA DE SIEMBRA' ||
-    h.toUpperCase().includes('FECHA') && h.toUpperCase().includes('SIEMBRA')
-  );
-  const fechaUltimoCorteIdx = STATE.headers.findIndex(h => 
-    h.toUpperCase().replace(/\s+/g, ' ').trim() === 'FECHA DE ULTIMO CORTE' ||
-    h.toUpperCase().replace(/\s+/g, ' ').trim() === 'FECHA DE ÚLTIMO CORTE' ||
-    (h.toUpperCase().includes('FECHA') && h.toUpperCase().includes('ULTIMO') && h.toUpperCase().includes('CORTE'))
-  );
-  
-  // Buscar la columna "EDAD HOY M" para reemplazarla
-  const edadHoyIdx = STATE.headers.findIndex(h => 
-    h.toUpperCase().replace(/\s+/g, ' ').trim() === 'EDAD HOY M' ||
-    h.toUpperCase().includes('EDAD') && h.toUpperCase().includes('HOY')
-  );
-  
-  if (edadHoyIdx !== -1) {
-    STATE.edadColumnIndex = edadHoyIdx;
-    console.log(`✅ Columna "EDAD HOY M" encontrada en índice ${edadHoyIdx} - será reemplazada con cálculo`);
-  }
-  
-  // Procesamos filas (optimizando memoria)
-  STATE.rows = [];
-  for(let i=1; i < lines.length; i++) {
-    const cells = lines[i].split(separator);
-    // Solo agregamos si la fila tiene datos coherentes
-    if (cells.length > 1) {
-      const row = cells.map(c => c.trim());
-      
-      // Reemplazar edad calculada si tenemos las columnas necesarias
+        if (!response.ok) throw new Error(`Error ${response.status}`);
+
+        const text = await response.text();
+        processData(text);
+
+      } catch (error) {
+        console.error('Fallo carga:', error);
+        // Si llegamos aquí, falló la red Y falló el caché del Service Worker.
+        // Intentamos un rescate manual del caché por si acaso.
+        tryFallbackCache();
+      }
+    }
+
+    async function tryFallbackCache() {
+      try {
+        const cache = await caches.match(CONFIG.csvFile);
+        if (cache) {
+          const text = await cache.text();
+          console.log('Recuperado mediante Fallback manual');
+          processData(text);
+          document.getElementById('offlineBanner').style.display = 'block';
+        } else {
+          showError('No se pudieron cargar los datos. Revisa tu conexión.');
+        }
+      } catch (e) {
+        showError('Error crítico: No hay datos disponibles.');
+      }
+    }
+
+    function processData(csvText) {
+      if (!csvText.trim()) return showError('El archivo de datos está vacío.');
+
+      const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
+      if (lines.length < 2) return showError('Formato de archivo inválido.');
+
+      // Parser simple pero efectivo
+      const separator = lines[0].includes(';') ? ';' : ',';
+      STATE.headers = lines[0].split(separator).map(h => h.trim());
+
+      // Identificar índices de columnas necesarias (nombres exactos de tu CSV)
+      const variedadIdx = STATE.headers.findIndex(h =>
+        h.toUpperCase().trim() === 'VARIEDAD'
+      );
+      const fechaSiembraIdx = STATE.headers.findIndex(h =>
+        h.toUpperCase().replace(/\s+/g, ' ').trim() === 'FECHA DE SIEMBRA' ||
+        h.toUpperCase().includes('FECHA') && h.toUpperCase().includes('SIEMBRA')
+      );
+      const fechaUltimoCorteIdx = STATE.headers.findIndex(h =>
+        h.toUpperCase().replace(/\s+/g, ' ').trim() === 'FECHA DE ULTIMO CORTE' ||
+        h.toUpperCase().replace(/\s+/g, ' ').trim() === 'FECHA DE ÚLTIMO CORTE' ||
+        (h.toUpperCase().includes('FECHA') && h.toUpperCase().includes('ULTIMO') && h.toUpperCase().includes('CORTE'))
+      );
+
+      // Buscar la columna "EDAD HOY M" para reemplazarla
+      const edadHoyIdx = STATE.headers.findIndex(h =>
+        h.toUpperCase().replace(/\s+/g, ' ').trim() === 'EDAD HOY M' ||
+        h.toUpperCase().includes('EDAD') && h.toUpperCase().includes('HOY')
+      );
+
+      if (edadHoyIdx !== -1) {
+        STATE.edadColumnIndex = edadHoyIdx;
+        console.log(`✅ Columna "EDAD HOY M" encontrada en índice ${edadHoyIdx} - será reemplazada con cálculo`);
+      }
+
+      // Procesamos filas (optimizando memoria)
+      STATE.rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cells = lines[i].split(separator);
+        // Solo agregamos si la fila tiene datos coherentes
+        if (cells.length > 1) {
+          const row = cells.map(c => c.trim());
+
+          // Reemplazar edad calculada si tenemos las columnas necesarias
+          if (variedadIdx !== -1 && fechaSiembraIdx !== -1 && edadHoyIdx !== -1) {
+            const edad = calcularEdad(row, variedadIdx, fechaSiembraIdx, fechaUltimoCorteIdx);
+            row[edadHoyIdx] = edad; // Reemplazar el valor existente
+          }
+
+          STATE.rows.push(row);
+        }
+      }
+
       if (variedadIdx !== -1 && fechaSiembraIdx !== -1 && edadHoyIdx !== -1) {
-        const edad = calcularEdad(row, variedadIdx, fechaSiembraIdx, fechaUltimoCorteIdx);
-        row[edadHoyIdx] = edad; // Reemplazar el valor existente
+        console.log('✅ Cálculo de edad aplicado correctamente');
+        console.log(`📊 Índices: Variedad=${variedadIdx}, FechaSiembra=${fechaSiembraIdx}, FechaÚltimoCorte=${fechaUltimoCorteIdx}, EdadHoyM=${edadHoyIdx}`);
+      } else {
+        console.warn('⚠️ No se pudieron detectar todas las columnas necesarias');
+        console.log(`Variedad: ${variedadIdx}, Fecha Siembra: ${fechaSiembraIdx}, Fecha Último Corte: ${fechaUltimoCorteIdx}, Edad Hoy M: ${edadHoyIdx}`);
       }
-      
-      STATE.rows.push(row);
+
+      // Inicializar vista
+      STATE.filteredRows = [...STATE.rows];
+      document.getElementById('loadingMsg').style.display = 'none';
+      document.querySelector('.table-container').style.display = 'block';
+      document.getElementById('pagination').style.display = 'flex';
+
+      renderTable();
     }
-  }
-  
-  if (variedadIdx !== -1 && fechaSiembraIdx !== -1 && edadHoyIdx !== -1) {
-    console.log('✅ Cálculo de edad aplicado correctamente');
-    console.log(`📊 Índices: Variedad=${variedadIdx}, FechaSiembra=${fechaSiembraIdx}, FechaÚltimoCorte=${fechaUltimoCorteIdx}, EdadHoyM=${edadHoyIdx}`);
-  } else {
-    console.warn('⚠️ No se pudieron detectar todas las columnas necesarias');
-    console.log(`Variedad: ${variedadIdx}, Fecha Siembra: ${fechaSiembraIdx}, Fecha Último Corte: ${fechaUltimoCorteIdx}, Edad Hoy M: ${edadHoyIdx}`);
-  }
 
-  // Inicializar vista
-  STATE.filteredRows = [...STATE.rows];
-  document.getElementById('loadingMsg').style.display = 'none';
-  document.querySelector('.table-container').style.display = 'block';
-  document.getElementById('pagination').style.display = 'flex';
-  
-  renderTable();
-}
+    // =======================
+    // RENDERIZADO OPTIMIZADO
+    // =======================
 
-// =======================
-// RENDERIZADO OPTIMIZADO
-// =======================
+    function renderTable() {
+      const tbody = document.querySelector('#maestro tbody');
+      const thead = document.querySelector('#maestro thead');
 
-function renderTable() {
-  const tbody = document.querySelector('#maestro tbody');
-  const thead = document.querySelector('#maestro thead');
-  
-  // Render Headers (solo una vez)
-  if (!thead.hasChildNodes()) {
-    const tr = document.createElement('tr');
-    STATE.headers.forEach((h, index) => {
-      const th = document.createElement('th');
-      th.textContent = h;
-      // Aplicar clase especial a la columna Edad
-      if (index === STATE.edadColumnIndex) {
-        th.className = 'edad-header';
+      // Render Headers (solo una vez)
+      if (!thead.hasChildNodes()) {
+        const tr = document.createElement('tr');
+        STATE.headers.forEach((h, index) => {
+          const th = document.createElement('th');
+          th.textContent = h;
+          // Aplicar clase especial a la columna Edad
+          if (index === STATE.edadColumnIndex) {
+            th.className = 'edad-header';
+          }
+          tr.appendChild(th);
+        });
+        thead.appendChild(tr);
       }
-      tr.appendChild(th);
+
+      // Paginación lógica
+      const totalPages = Math.ceil(STATE.filteredRows.length / CONFIG.pageSize) || 1;
+      if (STATE.currentPage > totalPages) STATE.currentPage = 1;
+
+      const start = (STATE.currentPage - 1) * CONFIG.pageSize;
+      const pageData = STATE.filteredRows.slice(start, start + CONFIG.pageSize);
+
+      // Render Body usando DocumentFragment (Mejor rendimiento)
+      const fragment = document.createDocumentFragment();
+
+      pageData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'clickable-row'; // Add class for styling
+
+        // Add Click Listener
+        tr.addEventListener('click', () => showRowDetails(row));
+
+        row.forEach((cell, index) => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          // Aplicar clase especial a la columna Edad
+          if (index === STATE.edadColumnIndex) {
+            td.className = 'edad-cell';
+          }
+          tr.appendChild(td);
+        });
+        fragment.appendChild(tr);
+      });
+
+      tbody.innerHTML = ''; // Limpiar
+      tbody.appendChild(fragment); // Insertar de golpe
+
+      // Actualizar controles UI
+      document.getElementById('pageInfo').textContent =
+        `Pág ${STATE.currentPage} de ${totalPages} (${STATE.filteredRows.length} registros)`;
+
+      document.getElementById('prevPage').disabled = STATE.currentPage === 1;
+      document.getElementById('nextPage').disabled = STATE.currentPage >= totalPages;
+    }
+
+    // =======================
+    // EVENTOS Y UTILIDADES
+    // =======================
+
+    // Debounce para la búsqueda (Evita lentitud al escribir)
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const term = e.target.value.toLowerCase();
+
+        // Filtrado
+        STATE.filteredRows = STATE.rows.filter(row =>
+          row.some(cell => cell.toLowerCase().includes(term))
+        );
+
+        STATE.currentPage = 1;
+        renderTable();
+      }, 300); // Espera 300ms después de dejar de escribir
     });
-    thead.appendChild(tr);
-  }
 
-  // Paginación lógica
-  const totalPages = Math.ceil(STATE.filteredRows.length / CONFIG.pageSize) || 1;
-  if (STATE.currentPage > totalPages) STATE.currentPage = 1;
-  
-  const start = (STATE.currentPage - 1) * CONFIG.pageSize;
-  const pageData = STATE.filteredRows.slice(start, start + CONFIG.pageSize);
-
-  // Render Body usando DocumentFragment (Mejor rendimiento)
-  const fragment = document.createDocumentFragment();
-  
-  pageData.forEach(row => {
-    const tr = document.createElement('tr');
-    row.forEach((cell, index) => {
-      const td = document.createElement('td');
-      td.textContent = cell;
-      // Aplicar clase especial a la columna Edad
-      if (index === STATE.edadColumnIndex) {
-        td.className = 'edad-cell';
+    document.getElementById('prevPage').addEventListener('click', () => {
+      if (STATE.currentPage > 1) {
+        STATE.currentPage--;
+        renderTable();
+        document.querySelector('.table-container').scrollTop = 0;
       }
-      tr.appendChild(td);
     });
-    fragment.appendChild(tr);
-  });
 
-  tbody.innerHTML = ''; // Limpiar
-  tbody.appendChild(fragment); // Insertar de golpe
+    document.getElementById('nextPage').addEventListener('click', () => {
+      const totalPages = Math.ceil(STATE.filteredRows.length / CONFIG.pageSize);
+      if (STATE.currentPage < totalPages) {
+        STATE.currentPage++;
+        renderTable();
+        document.querySelector('.table-container').scrollTop = 0;
+      }
+    });
 
-  // Actualizar controles UI
-  document.getElementById('pageInfo').textContent = 
-    `Pág ${STATE.currentPage} de ${totalPages} (${STATE.filteredRows.length} registros)`;
-  
-  document.getElementById('prevPage').disabled = STATE.currentPage === 1;
-  document.getElementById('nextPage').disabled = STATE.currentPage >= totalPages;
-}
+    function checkConnection() {
+      const banner = document.getElementById('offlineBanner');
+      banner.style.display = navigator.onLine ? 'none' : 'block';
+    }
 
-// =======================
-// EVENTOS Y UTILIDADES
-// =======================
+    function showError(msg) {
+      document.getElementById('loadingMsg').style.display = 'none';
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+      el.innerHTML += '<br><br><button onclick="location.reload()" class="btn-update">Reintentar</button>';
+    }
 
-// Debounce para la búsqueda (Evita lentitud al escribir)
-let searchTimeout;
-document.getElementById('searchInput').addEventListener('input', (e) => {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    const term = e.target.value.toLowerCase();
-    
-    // Filtrado
-    STATE.filteredRows = STATE.rows.filter(row => 
-      row.some(cell => cell.toLowerCase().includes(term))
-    );
-    
-    STATE.currentPage = 1;
-    renderTable();
-  }, 300); // Espera 300ms después de dejar de escribir
-});
+    // =======================
+    // MODAL LOGIC
+    // =======================
+    function showRowDetails(row) {
+      const modalBody = document.getElementById('modalBody');
+      modalBody.innerHTML = ''; // Clear previous
 
-document.getElementById('prevPage').addEventListener('click', () => {
-  if (STATE.currentPage > 1) {
-    STATE.currentPage--;
-    renderTable();
-    document.querySelector('.table-container').scrollTop = 0;
-  }
-});
+      STATE.headers.forEach((header, index) => {
+        const item = document.createElement('div');
+        item.className = 'detail-item';
 
-document.getElementById('nextPage').addEventListener('click', () => {
-  const totalPages = Math.ceil(STATE.filteredRows.length / CONFIG.pageSize);
-  if (STATE.currentPage < totalPages) {
-    STATE.currentPage++;
-    renderTable();
-    document.querySelector('.table-container').scrollTop = 0;
-  }
-});
+        const label = document.createElement('div');
+        label.className = 'detail-label';
+        label.textContent = header;
 
-function checkConnection() {
-  const banner = document.getElementById('offlineBanner');
-  banner.style.display = navigator.onLine ? 'none' : 'block';
-}
+        const value = document.createElement('div');
+        value.className = 'detail-value';
+        // Add edad-specific styling if needed, or just text
+        value.textContent = row[index];
+        if (index === STATE.edadColumnIndex) {
+          value.style.color = '#059669'; // Green text
+          value.style.fontWeight = '700';
+        }
 
-function showError(msg) {
-  document.getElementById('loadingMsg').style.display = 'none';
-  const el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  el.innerHTML += '<br><br><button onclick="location.reload()" class="btn-update">Reintentar</button>';
-}
+        item.appendChild(label);
+        item.appendChild(value);
+        modalBody.appendChild(item);
+      });
 
-// Arrancar
-document.addEventListener('DOMContentLoaded', initApp);
+      const modal = document.getElementById('detailModal');
+      modal.style.display = 'flex';
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+    }
 
-</script>
+    function closeModal(event) {
+      // If triggered by overlay click (optional second check via event)
+      const modal = document.getElementById('detailModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = ''; // Restore scroll
+    }
+
+    // Esc handle to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('detailModal').style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    // Arrancar
+    document.addEventListener('DOMContentLoaded', initApp);
+
+  </script>
 </body>
+
 </html>

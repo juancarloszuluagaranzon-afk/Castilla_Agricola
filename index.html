@@ -1,348 +1,459 @@
 <!doctype html>
 <html lang="es" class="dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
-<link rel="manifest" href="manifest.json">
-<title>Castilla Agrícola</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect">
-<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-<style>
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
-}
-body {
-  /* Solución de scroll: Eliminamos min-height forzado */
-  font-family: 'Manrope', sans-serif;
-}
-@keyframes pulse-slow {
-  0%,100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.9; }
-}
-.animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
 
-/* Estilos para el banner de instalación */
-.install-banner {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #0f172a;
-  color: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  z-index: 1000;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-}
-.install-banner button {
-  background: #0ea5a4;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  margin: 0 4px;
-  cursor: pointer;
-}
-.install-banner button.secondary {
-  background: #64748b;
-}
-</style>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Castilla Agrícola - Maestro de Suertes">
+    <link rel="manifest" href="manifest.json">
+    <title>Castilla Agrícola</title>
+
+    <!-- Scripts & Styles -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        /* Glassmorphism & Animations */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .animated-bg {
+            background: linear-gradient(-45deg, #0f172a, #111827, #0d9488, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Install Banner Transition */
+        #installBanner {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Button Press Effect */
+        .btn-press:active {
+            transform: scale(0.98);
+        }
+    </style>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col items-center justify-center h-full p-6 relative overflow-x-hidden">
-  <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-teal-50 via-white to-slate-100 dark:from-slate-800 dark:via-slate-900 dark:to-black -z-10"></div>
+<body
+    class="animated-bg text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
 
-  <div id="installBanner" class="install-banner" style="display:none">
-    <div class="font-semibold mb-2">📱 Instalar App</div>
-    <div class="text-sm text-slate-300 mb-3">Instala la aplicación para uso offline</div>
-    <button onclick="installApp()">Instalar</button>
-    <button onclick="dismissInstall()" class="secondary">Más tarde</button>
-  </div>
-
-  <main class="w-full max-w-lg text-center bg-white dark:bg-slate-800/70 backdrop-blur-lg rounded-2xl shadow-xl p-10 border border-slate-200 dark:border-slate-700 relative">
-    
-   <div class="flex justify-center mb-6">
-  <img src="icon-512.png"
-       alt="Castilla Agrícola"
-       class="w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 animate-pulse-slow object-contain">
-</div>
-
-    <h1 class="text-3xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">Castilla Agrícola</h1>
-    <h2 class="text-lg font-medium text-slate-600 dark:text-slate-300 mb-6">Maestro de Suertes · Transformación Digital</h2>
-    <div id="installStatus" class="mb-6 p-4 bg-slate-100 dark:bg-slate-700 rounded-lg text-sm">
-      <div class="flex items-center justify-center gap-2">
-        <span id="statusIcon" class="material-symbols-outlined text-teal-500">sync</span>
-        <span id="statusText">Inicializando aplicación...</span>
-      </div>
+    <!-- Background Elements -->
+    <div
+        class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30 pointer-events-none">
+    </div>
+    <div
+        class="absolute top-0 left-0 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+    </div>
+    <div
+        class="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none">
     </div>
 
-    <div class="flex flex-col gap-4">
-      <button onclick="window.location.href='maestro.html'" class="w-full py-3 bg-gradient-to-r from-teal-600 to-teal-400 hover:from-teal-500 hover:to-teal-300 text-white font-bold rounded-lg shadow-md transition-transform hover:scale-[1.02]">
-        📋 Abrir Maestro
-      </button>
+    <!-- Main Card -->
+    <main
+        class="w-full max-w-md glass-panel rounded-3xl shadow-2xl p-8 relative z-10 flex flex-col items-center text-center border-t border-white/10">
 
-      <button onclick="clearCache()" class="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg shadow transition-transform hover:scale-[1.02]">
-        🔄 Limpiar Caché
-      </button>
+        <!-- Status Pill -->
+        <div id="installStatus"
+            class="absolute top-4 right-4 bg-slate-800/80 backdrop-blur rounded-full px-3 py-1 flex items-center gap-2 border border-slate-700 shadow-sm transition-all duration-300">
+            <span id="statusIcon" class="material-symbols-rounded text-teal-400 text-[18px] animate-spin">refresh</span>
+            <span id="statusText" class="text-xs font-semibold text-slate-300 tracking-wide">Iniciando...</span>
+        </div>
 
-      <button onclick="verifyInstallation()" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-lg shadow transition-transform hover:scale-[1.02]">
-        🔍 Verificar Instalación
-      </button>
+        <!-- Hero Section -->
+        <div class="mt-8 mb-8 relative">
+            <div class="absolute inset-0 bg-teal-500/30 blur-2xl rounded-full"></div>
+            <img src="icon-512.png" alt="Castilla Agrícola"
+                class="w-40 h-40 object-contain relative z-10 animate-float drop-shadow-2xl">
+        </div>
+
+        <h1
+            class="text-4xl font-extrabold tracking-tight mb-2 text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+            Castilla Agrícola
+        </h1>
+        <p class="text-slate-400 text-sm font-medium tracking-wide uppercase mb-10">Maestro de Suertes · Transformación
+            Digital</p>
+
+        <!-- Primary Action -->
+        <button onclick="window.location.href='maestro.html'"
+            class="btn-press w-full group relative flex items-center justify-center gap-3 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-teal-500/20 transition-all duration-300 hover:shadow-teal-500/40 border border-white/10 mb-8">
+            <span class="material-symbols-rounded text-2xl">dataset</span>
+            <span class="text-lg">Abrir Maestro</span>
+            <span
+                class="absolute right-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                <span class="material-symbols-rounded">arrow_forward</span>
+            </span>
+        </button>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-3 w-full gap-4 mb-8">
+            <div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                <span class="material-symbols-rounded text-sky-400 text-2xl">speed</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Rápido</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                <span class="material-symbols-rounded text-emerald-400 text-2xl">security</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Seguro</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                <span class="material-symbols-rounded text-amber-400 text-2xl">cloud_off</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Offline</span>
+            </div>
+        </div>
+
+        <!-- Advanced Options Collapsible -->
+        <div class="w-full">
+            <button onclick="toggleOptions()"
+                class="text-slate-500 hover:text-slate-300 text-xs font-semibold flex items-center justify-center gap-1 mx-auto mb-4 transition-colors">
+                <span class="material-symbols-rounded text-[16px]">settings</span>
+                Opciones Avanzadas
+            </button>
+
+            <div id="advancedOptions"
+                class="hidden flex-col gap-3 transition-all duration-300 ease-in-out origin-top opacity-0 scale-y-95">
+                <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 grid gap-3">
+                    <button onclick="verifyInstallation()"
+                        class="btn-press flex items-center justify-center gap-2 w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-lg border border-slate-700 transition-colors">
+                        <span class="material-symbols-rounded text-amber-400 text-sm">verified</span>
+                        Verificar Instalación
+                    </button>
+                    <button onclick="clearCache()"
+                        class="btn-press flex items-center justify-center gap-2 w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-sm font-semibold rounded-lg border border-rose-500/20 hover:border-rose-500/40 transition-colors">
+                        <span class="material-symbols-rounded text-sm">delete</span>
+                        Limpiar Caché
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center">
+        <p class="text-slate-500 text-xs font-medium">
+            © 2025 Castilla Agrícola S.A.S.
+        </p>
+        <div class="flex items-center justify-center gap-2 mt-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+            <span class="text-slate-600 text-[10px] uppercase tracking-widest font-bold"
+                id="versionFooter">v1.8.2</span>
+        </div>
+    </footer>
+
+    <!-- Install Banner (Fixed Bottom) -->
+    <div id="installBanner"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-slate-800 border-t-2 border-teal-500 rounded-xl shadow-2xl p-4 z-50 translate-y-[150%] flex flex-col gap-3">
+        <div class="flex items-start gap-4">
+            <div class="bg-teal-500/10 p-2 rounded-lg">
+                <span class="material-symbols-rounded text-teal-400">install_mobile</span>
+            </div>
+            <div>
+                <h3 class="text-white font-bold text-sm">Instalar App</h3>
+                <p class="text-slate-400 text-xs mt-1 leading-relaxed">Instala para acceder rápido y usar sin conexión a
+                    internet.</p>
+            </div>
+        </div>
+        <div class="flex gap-2 mt-1">
+            <button onclick="installApp()"
+                class="flex-1 bg-teal-500 hover:bg-teal-400 text-white text-sm font-bold py-2 rounded-lg transition-colors">Instalar</button>
+            <button onclick="dismissInstall()"
+                class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium py-2 rounded-lg transition-colors">Ahora
+                no</button>
+        </div>
     </div>
 
-    <div class="mt-8 grid grid-cols-3 gap-4 text-center">
-      <div class="flex flex-col items-center gap-2">
-        <span class="material-symbols-outlined text-teal-500 text-3xl">bolt</span>
-        <p class="text-sm font-semibold">Rápido</p>
-      </div>
-      <div class="flex flex-col items-center gap-2">
-        <span class="material-symbols-outlined text-teal-500 text-3xl">shield</span>
-        <p class="text-sm font-semibold">Seguro</p>
-      </div>
-      <div class="flex flex-col items-center gap-2">
-        <span class="material-symbols-outlined text-teal-500 text-3xl">devices</span>
-        <p class="text-sm font-semibold">Offline</p>
-      </div>
-    </div>
-  </main>
+    <!-- Logic Script -->
+    <script>
+        // ==============================
+        // 🔧 CONFIGURACIÓN
+        // ==============================
+        const APP_VERSION = 'v1.8.3';
+        const CACHE_NAME = `castilla-maestro-${APP_VERSION}`;
+        let deferredPrompt = null;
 
-  <footer class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-    © 2025 Castilla Agrícola S.A.S. — <span class="font-semibold text-teal-500">v1.7.9</span>
-  </footer>
+        // Actualizar versión en footer
+        document.getElementById('versionFooter').textContent = APP_VERSION;
 
-  <script>
-// ==============================
-// 🔧 CONFIGURACIÓN
-// ==============================
-const APP_VERSION = 'v1.8.2';
-const CACHE_NAME = `castilla-maestro-${APP_VERSION}`; 
-let deferredPrompt = null;
-
-// ==============================
-// 🔧 Registro del Service Worker
-// ==============================
-async function registerServiceWorker() {
-  if (!('serviceWorker' in navigator)) {
-    updateStatus('warning', 'Navegador no soporta modo offline.');
-    return null;
-  }
-  
-  try {
-    updateStatus('sync', 'Instalando aplicación...');
-    
-    const registration = await navigator.serviceWorker.register('service-worker.js');
-    console.log('[SW] Registrado correctamente:', registration.scope);
-    
-    if (registration.installing) {
-      registration.installing.addEventListener('statechange', () => {
-        if (registration.installing.state === 'activated') {
-          console.log('[SW] Activado y listo.');
-          verifyCacheStatus(); 
+        function toggleOptions() {
+            const opts = document.getElementById('advancedOptions');
+            if (opts.classList.contains('hidden')) {
+                opts.classList.remove('hidden');
+                setTimeout(() => {
+                    opts.classList.remove('opacity-0', 'scale-y-95');
+                }, 10);
+            } else {
+                opts.classList.add('opacity-0', 'scale-y-95');
+                setTimeout(() => {
+                    opts.classList.add('hidden');
+                }, 300);
+            }
         }
-      });
-    } else {
-      verifyCacheStatus(); 
-    }
-    
-    registration.addEventListener('updatefound', () => {
-      const newWorker = registration.installing;
-      newWorker.addEventListener('statechange', () => {
-        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-          showUpdateNotification(newWorker);
+
+        // ==============================
+        // 🔧 Registro del Service Worker
+        // ==============================
+        async function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) {
+                updateStatus('warning', 'Sin soporte offline');
+                return null;
+            }
+
+            try {
+                updateStatus('loading', 'Iniciando...');
+
+                const registration = await navigator.serviceWorker.register('service-worker.js');
+                console.log('[SW] Registrado:', registration.scope);
+
+                if (registration.installing) {
+                    registration.installing.addEventListener('statechange', () => {
+                        if (registration.installing.state === 'activated') {
+                            verifyCacheStatus();
+                        }
+                    });
+                } else {
+                    verifyCacheStatus();
+                }
+
+                // Detectar actualizaciones
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateNotification(newWorker);
+                        }
+                    });
+                });
+
+                return registration;
+            } catch (err) {
+                console.error('[SW] Error:', err);
+                updateStatus('error', 'Error de instalación');
+                return null;
+            }
         }
-      });
-    });
 
-    return registration;
-  } catch (err) {
-    console.error('[SW] Error al registrar:', err);
-    updateStatus('error', 'Error en la instalación.');
-    return null;
-  }
-}
+        // ==============================
+        // 📱 VERIFICACIÓN DE CACHÉ
+        // ==============================
+        async function verifyCacheStatus() {
+            try {
+                updateStatus('loading', 'Verificando...');
+                await navigator.serviceWorker.ready;
 
-// ==============================
-// 📱 VERIFICACIÓN DE CACHÉ SIMPLIFICADA
-// ==============================
-async function verifyCacheStatus() {
-  try {
-    console.log('🔍 Verificando estado final...');
-    updateStatus('sync', 'Verificando caché...');
+                const cache = await caches.open(CACHE_NAME);
+                const keys = await cache.keys();
 
-    await navigator.serviceWorker.ready;
-    
-    const cache = await caches.open(CACHE_NAME);
-    const keys = await cache.keys();
-    
-    if (keys.length > 3) { 
-      updateStatus('success', '✅ App lista para uso offline');
-      console.log(`✅ ${keys.length} archivos en caché (${CACHE_NAME})`);
-    } else {
-      updateStatus('warning', '⚠️ Instalación incompleta. Recarga para intentar de nuevo.');
-    }
-  } catch (err) {
-    console.error('❌ Error verificando caché:', err);
-    updateStatus('error', '❌ Error al acceder a caché.');
-  }
-}
+                if (keys.length > 3) {
+                    updateStatus('success', 'Listo para uso offline');
+                } else {
+                    updateStatus('warning', 'Instalación incompleta');
+                }
+            } catch (err) {
+                console.error('[Verify] Error:', err);
+                updateStatus('error', 'Error de verificación');
+            }
+        }
 
-// ==============================
-// 📊 ACTUALIZAR ESTADO EN UI
-// ==============================
-function updateStatus(type, message) {
-  const statusIcon = document.getElementById('statusIcon');
-  const statusText = document.getElementById('statusText');
-  const statusDiv = document.getElementById('installStatus');
-  
-  statusText.textContent = message;
-  
-  statusDiv.className = 'mb-6 p-4 rounded-lg text-sm';
-  statusIcon.className = 'material-symbols-outlined';
-  
-  switch(type) {
-    case 'success':
-      statusDiv.classList.add('bg-green-100', 'dark:bg-green-900');
-      statusIcon.classList.add('text-green-500');
-      statusIcon.textContent = 'check_circle';
-      break;
-    case 'warning':
-      statusDiv.classList.add('bg-amber-100', 'dark:bg-amber-900');
-      statusIcon.classList.add('text-amber-500');
-      statusIcon.textContent = 'schedule';
-      break;
-    case 'error':
-      statusDiv.classList.add('bg-red-100', 'dark:bg-red-900');
-      statusIcon.classList.add('text-red-500');
-      statusIcon.textContent = 'error';
-      break;
-    default:
-      statusDiv.classList.add('bg-slate-100', 'dark:bg-slate-700');
-      statusIcon.classList.add('text-teal-500');
-      statusIcon.textContent = 'sync';
-  }
-}
+        // ==============================
+        // 📊 ACTUALIZAR ESTADO EN UI
+        // ==============================
+        function updateStatus(type, message) {
+            const statusIcon = document.getElementById('statusIcon');
+            const statusText = document.getElementById('statusText');
 
-// ==============================
-// 📱 INSTALACIÓN DE PWA
-// ==============================
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  showInstallBanner();
-});
+            statusText.textContent = message;
 
-function showInstallBanner() {
-  document.getElementById('installBanner').style.display = 'block';
-}
+            // Reemplazar clases de icono según estado
+            statusIcon.className = 'material-symbols-rounded text-[18px]'; // Base classes
 
-function dismissInstall() {
-  document.getElementById('installBanner').style.display = 'none';
-}
+            switch (type) {
+                case 'success':
+                    statusIcon.textContent = 'check_circle';
+                    statusIcon.classList.add('text-emerald-400');
+                    break;
+                case 'warning':
+                    statusIcon.textContent = 'warning';
+                    statusIcon.classList.add('text-amber-400');
+                    break;
+                case 'error':
+                    statusIcon.textContent = 'error';
+                    statusIcon.classList.add('text-rose-400');
+                    break;
+                case 'loading':
+                default:
+                    statusIcon.textContent = 'refresh';
+                    statusIcon.classList.add('text-teal-400', 'animate-spin');
+                    break;
+            }
+        }
 
-async function installApp() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      updateStatus('success', 'App instalada correctamente');
-    }
-    
-    deferredPrompt = null;
-    dismissInstall();
-  }
-}
+        // ==============================
+        // 📱 INSTALACIÓN DE PWA
+        // ==============================
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallBanner();
+        });
 
-// ==============================
-// 🔄 NOTIFICACIÓN DE ACTUALIZACIÓN
-// ==============================
-function showUpdateNotification(newWorker) {
-  const needsUpdate = confirm('¡Nueva versión disponible! ¿Quieres actualizar ahora?');
-  
-  if (needsUpdate) {
-    if (newWorker) {
-      newWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
-  }
-}
+        function showInstallBanner() {
+            // Eliminar translate-y-[150%] para mostrar
+            const banner = document.getElementById('installBanner');
+            banner.classList.remove('translate-y-[150%]');
+        }
 
-// ==============================
-// 🧹 LIMPIAR CACHÉ (Función de emergencia)
-// ==============================
-async function clearCache() {
-  try {
-    console.log('🧹 Iniciando limpieza de caché...');
-    updateStatus('sync', 'Limpiando caché...');
-    
-    // 1. Desregistrar Service Workers
-    if ('serviceWorker' in navigator) {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      for (const registration of registrations) {
-        await registration.unregister();
-      }
-    }
+        function dismissInstall() {
+            const banner = document.getElementById('installBanner');
+            banner.classList.add('translate-y-[150%]');
+        }
 
-    // 2. Eliminar todas las cachés
-    if ('caches' in window) {
-      const cacheNames = await caches.keys();
-      await Promise.all(cacheNames.map(name => caches.delete(name)));
-    }
+        async function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    updateStatus('success', 'Instalando...');
+                }
+                deferredPrompt = null;
+                dismissInstall();
+            }
+        }
 
-    // 3. Limpiar almacenamiento local
-    localStorage.clear();
-    sessionStorage.clear();
-    
-    updateStatus('success', '✅ Caché limpiado completamente');
-    
-    setTimeout(() => {
-      if (confirm('✅ Caché limpiado completamente. Se recargará la página para reinstalar la app.')) {
-        window.location.reload(true);
-      }
-    }, 500);
-    
-  } catch (err) {
-    console.error('❌ Error al limpiar caché:', err);
-    updateStatus('error', '❌ Error al limpiar caché');
-    alert('⚠️ Error crítico al limpiar caché. Intenta cerrar y abrir el navegador.');
-  }
-}
+        // ==============================
+        // 🔄 NOTIFICACIÓN DE ACTUALIZACIÓN
+        // ==============================
+        function showUpdateNotification(newWorker) {
+            // Usamos un toast nativo o alert custom para esto
+            // Por simplicidad, alert standard pero styled en futuro
+            // Aquí en modo moderno, podríamos usar el mismo banner pero con otro texto
+            const confirmUpdate = confirm('🚀 Nueva versión disponible. ¿Actualizar ahora?');
+            if (confirmUpdate && newWorker) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+        }
 
-// ==============================
-// 🔍 VERIFICACIÓN MANUAL
-// ==============================
-async function verifyInstallation() {
-  updateStatus('sync', 'Verificando instalación...');
-  await verifyCacheStatus();
-}
+        // ==============================
+        // 🧹 LIMPIAR CACHÉ
+        // ==============================
+        async function clearCache() {
+            if (!confirm('¿Estás seguro de limpiar la caché y reiniciar? Esto puede solucionar errores de datos.')) return;
 
-// ==============================
-// 🚀 INICIALIZACIÓN
-// ==============================
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 Inicializando app...');
-  
-  if (!navigator.onLine) {
-    updateStatus('warning', '🌐 Estás offline - Usando datos en caché');
-  }
-  
-  registerServiceWorker();
-});
+            try {
+                updateStatus('loading', 'Limpiando...');
 
-// Escuchar cambios de conexión
-window.addEventListener('online', () => {
-  updateStatus('success', '✅ Conexión restaurada - App lista');
-  verifyCacheStatus();
-});
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
 
-window.addEventListener('offline', () => {
-  updateStatus('warning', '🌐 Estás offline - Usando datos en caché');
-});
-  </script>
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+
+                localStorage.clear();
+                sessionStorage.clear();
+
+                updateStatus('success', 'Limpieza completa');
+
+                setTimeout(() => window.location.reload(true), 1000);
+
+            } catch (err) {
+                console.error('[Clean] Error:', err);
+                updateStatus('error', 'Error al limpiar');
+            }
+        }
+
+        function verifyInstallation() {
+            verifyCacheStatus();
+        }
+
+        // ==============================
+        // 🚀 INICIALIZACIÓN
+        // ==============================
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!navigator.onLine) {
+                updateStatus('warning', 'Modo Offline');
+            }
+            registerServiceWorker();
+        });
+
+        window.addEventListener('online', () => {
+            updateStatus('success', 'Conectado');
+            verifyCacheStatus();
+        });
+
+        window.addEventListener('offline', () => {
+            updateStatus('warning', 'Modo Offline');
+        });
+
+    </script>
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1.8.2'; // Actualizado para nueva versión con cálculo de edad
+const CACHE_VERSION = 'v1.8.3'; // Actualizado para nueva versión con cálculo de edad
 const CACHE_NAME = `castilla-maestro-${CACHE_VERSION}`;
 const BASE = '/';
 
