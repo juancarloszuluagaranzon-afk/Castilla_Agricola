@@ -14,6 +14,13 @@ const CRITICAL_URLS = [
   BASE + 'icon-512.png'
 ];
 
+// CDNs externos (Tailwind, Fonts)
+const EXTERNAL_CDNS = [
+  'cdn.tailwindcss.com',
+  'fonts.googleapis.com',
+  'fonts.gstatic.com'
+];
+
 // ===============================
 // 1. INSTALAR – Cacheo inicial
 // ===============================
@@ -74,8 +81,9 @@ self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
 
-  // Solo interceptamos peticiones de nuestro propio dominio
-  if (url.origin !== location.origin) return;
+  // Permitir peticiones al propio dominio o a los CDNs externos permitidos
+  const isExternalCDN = EXTERNAL_CDNS.some(cdn => url.hostname === cdn);
+  if (url.origin !== location.origin && !isExternalCDN) return;
 
   // A. ESTRATEGIA ESPECIAL PARA CSV (Prioridad: Velocidad)
   // Muestra el dato viejo rápido mientras descarga el nuevo en segundo plano
@@ -89,7 +97,8 @@ self.addEventListener('fetch', event => {
     fetch(request)
       .then(res => {
         // Si hay red y responde OK, actualizamos la caché
-        if (res && res.ok) {
+        // Guardar res.type === 'opaque' (CORS sin credenciales)
+        if (res && (res.ok || res.type === 'opaque')) {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
         }
@@ -102,7 +111,7 @@ self.addEventListener('fetch', event => {
         const cachedResponse = await caches.match(request);
         if (cachedResponse) return cachedResponse;
 
-        // 2. FALLBACK DE EMERGENCIA (Recuperado de v1.7.7)
+        // 2. FALLBACK DE EMERGENCIA
         // Si el usuario navega a una URL que no tiene caché, le damos el HTML principal
         if (request.destination === 'document' || request.url.includes('.html')) {
           console.log('[SW] 🆘 Sirviendo Fallback HTML');

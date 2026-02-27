@@ -12,30 +12,46 @@
   <style>
     :root {
       --bg: #f8fafc;
-      --accent: #0ea5a4;
-      --text: #0f172a;
-      --header-bg: #ffffff;
+      --accent: #0f766e;
+      /* Darker teal for higher contrast outdoors */
+      --text: #020617;
+      /* Slate-950 for maximum contrast */
+      --header-bg: rgba(255, 255, 255, 0.75);
     }
 
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
+      background: linear-gradient(135deg, #e2e8f0, #cbd5e1, #ffffff);
+      background-attachment: fixed;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Header estático y limpio */
+    /* Liquid Glassmorphism for Containers */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Header estático y limpio con Glass */
     header {
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 12px 16px;
       background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
     header img.logo {
@@ -70,22 +86,49 @@
     /* Controles y Búsqueda */
     .controls {
       margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    input {
+    .filters-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input,
+    select {
       width: 100%;
       padding: 12px;
       border-radius: 10px;
-      border: 1px solid #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
       font-size: 16px;
+      color: #0f172a;
+      font-weight: 600;
+      /* High contrast text */
       box-sizing: border-box;
-      transition: border 0.2s;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(14, 165, 164, 0.1);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+    }
+
+    select {
+      flex: 1;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
     }
 
     /* Tabla Responsiva */
@@ -135,14 +178,16 @@
 
     /* Columna de Edad con fondo verde claro */
     td.edad-cell {
-      background-color: #d1fae5;
-      font-weight: 600;
-      color: #065f46;
+      background-color: #dcfce7;
+      font-weight: 800;
+      /* Extra bold for outdoor contrast */
+      color: #064e3b;
     }
 
     th.edad-header {
       background-color: #a7f3d0;
-      color: #065f46;
+      color: #064e3b;
+      font-weight: 700;
     }
 
     /* Pagination */
@@ -367,6 +412,73 @@
     tr.clickable-row:hover {
       background-color: #f1f5f9;
     }
+
+    /* Custom Multi-select */
+    .multiselect-container {
+      position: relative;
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .multiselect-header {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text);
+    }
+
+    .multiselect-header::after {
+      content: '▼';
+      font-size: 10px;
+      margin-left: auto;
+      color: #64748b;
+    }
+
+    .multiselect-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      max-height: 250px;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      display: none;
+      z-index: 50;
+      margin-top: 4px;
+    }
+
+    .multiselect-options.show {
+      display: block;
+    }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      color: #1e293b;
+    }
+
+    .multiselect-option:hover {
+      background: #f1f5f9;
+    }
+
+    .multiselect-option input {
+      margin-right: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -383,7 +495,7 @@
 
   <div class="container">
 
-    <div id="updateBanner" class="banner update-banner">
+    <div id="updateBanner" class="banner update-banner" style="display: none !important;">
       <span>✨ Nueva versión disponible</span>
       <button class="btn-update" onclick="applyUpdate()">Actualizar</button>
     </div>
@@ -395,7 +507,44 @@
     <div id="errorMsg" class="banner error-banner"></div>
 
     <div class="controls">
-      <input id="searchInput" type="search" placeholder="🔍 Buscar suerte, zona, código..." autocomplete="off">
+      <input id="searchInput" class="glass-panel" type="search" placeholder="🔍 Buscar suerte, zona, código..."
+        autocomplete="off">
+      <div class="filters-row">
+        <select id="zonaFilter" class="glass-panel" onchange="applyFilters()">
+          <option value="">Zonas</option>
+        </select>
+        <select id="zonaAgroFilter" class="glass-panel" onchange="applyFilters()">
+          <option value="">Zonas Agro</option>
+        </select>
+        <select id="variedadFilter" class="glass-panel" onchange="applyFilters()">
+          <option value="">Variedades</option>
+        </select>
+      </div>
+      <div class="filters-row" style="margin-top: 8px;">
+        <div class="multiselect-container" id="edadSelectContainer">
+          <div class="glass-panel multiselect-header" id="edadFilterHeader" onclick="toggleEdadDropdown()">
+            Edad: Todas
+          </div>
+          <div class="multiselect-options" id="edadFilterOptions">
+            <!-- Checkboxes generados por JS -->
+          </div>
+        </div>
+        <select id="mesCorteFilter" class="glass-panel" onchange="applyFilters()">
+          <option value="">Corte: Todos</option>
+          <option value="0">Enero</option>
+          <option value="1">Febrero</option>
+          <option value="2">Marzo</option>
+          <option value="3">Abril</option>
+          <option value="4">Mayo</option>
+          <option value="5">Junio</option>
+          <option value="6">Julio</option>
+          <option value="7">Agosto</option>
+          <option value="8">Septiembre</option>
+          <option value="9">Octubre</option>
+          <option value="10">Noviembre</option>
+          <option value="11">Diciembre</option>
+        </select>
+      </div>
     </div>
 
     <div id="loadingMsg" class="loading">
@@ -445,10 +594,15 @@
     let STATE = {
       headers: [],
       rows: [],
+      searchableText: [], // Fast search array
       filteredRows: [],
       currentPage: 1,
       newWorker: null,
-      edadColumnIndex: -1 // Índice de la columna de edad
+      edadColumnIndex: -1,
+      zonaColumnIndex: -1,
+      zonaAgroColumnIndex: -1,
+      variedadColumnIndex: -1,
+      fechaProxColumnIndex: -1
     };
 
     // =======================
@@ -481,7 +635,8 @@
 
     function showUpdateBanner(worker) {
       STATE.newWorker = worker;
-      document.getElementById('updateBanner').style.display = 'flex';
+      // Auto-update to avoid showing the banner
+      applyUpdate();
     }
 
     function applyUpdate() {
@@ -642,8 +797,21 @@
         console.log(`✅ Columna "EDAD HOY M" encontrada en índice ${edadHoyIdx} - será reemplazada con cálculo`);
       }
 
-      // Procesamos filas (optimizando memoria)
+      // Buscar índices para filtros dinámicos
+      STATE.zonaColumnIndex = STATE.headers.findIndex(h => h.toUpperCase().trim() === 'ZONA');
+      STATE.variedadColumnIndex = variedadIdx;
+      STATE.zonaAgroColumnIndex = STATE.headers.findIndex(h => h.toUpperCase().trim() === 'ZONA AGROECOLOGICA');
+      STATE.fechaProxColumnIndex = STATE.headers.findIndex(h => h.toUpperCase().trim() === 'FECHA DEL PROXIMO CORTE');
+
+      // Sets para valores únicos de los filtros
+      const zonasSet = new Set();
+      const zonasAgroSet = new Set();
+      const variedadesSet = new Set();
+      const edadesSet = new Set();
+
+      // Procesamos filas (optimizando memoria y búsqueda)
       STATE.rows = [];
+      STATE.searchableText = [];
       for (let i = 1; i < lines.length; i++) {
         const cells = lines[i].split(separator);
         // Solo agregamos si la fila tiene datos coherentes
@@ -656,9 +824,29 @@
             row[edadHoyIdx] = edad; // Reemplazar el valor existente
           }
 
+          // Rellenar filtros
+          if (STATE.zonaColumnIndex !== -1 && row[STATE.zonaColumnIndex]) zonasSet.add(row[STATE.zonaColumnIndex]);
+          if (STATE.zonaAgroColumnIndex !== -1 && row[STATE.zonaAgroColumnIndex]) zonasAgroSet.add(row[STATE.zonaAgroColumnIndex]);
+          if (STATE.variedadColumnIndex !== -1 && row[STATE.variedadColumnIndex]) variedadesSet.add(row[STATE.variedadColumnIndex]);
+
+          if (STATE.edadColumnIndex !== -1 && row[STATE.edadColumnIndex]) {
+            const edadNum = Math.floor(parseFloat(row[STATE.edadColumnIndex]));
+            if (!isNaN(edadNum)) edadesSet.add(edadNum.toString());
+          }
+
           STATE.rows.push(row);
+          // Precomputar texto en minúsculas para búsqueda instantánea O(1) comprobación
+          STATE.searchableText.push(row.join(' ').toLowerCase());
         }
       }
+
+      // Poblar dropdowns de filtros
+      populateSelect('zonaFilter', Array.from(zonasSet).sort());
+      populateSelect('zonaAgroFilter', Array.from(zonasAgroSet).sort());
+      populateSelect('variedadFilter', Array.from(variedadesSet).sort());
+
+      const edadesSorted = Array.from(edadesSet).sort((a, b) => parseInt(a) - parseInt(b));
+      populateEdadCheckboxes(edadesSorted);
 
       if (variedadIdx !== -1 && fechaSiembraIdx !== -1 && edadHoyIdx !== -1) {
         console.log('✅ Cálculo de edad aplicado correctamente');
@@ -672,6 +860,7 @@
       STATE.filteredRows = [...STATE.rows];
       document.getElementById('loadingMsg').style.display = 'none';
       document.querySelector('.table-container').style.display = 'block';
+      document.querySelector('.table-container').classList.add('glass-panel');
       document.getElementById('pagination').style.display = 'flex';
 
       renderTable();
@@ -740,26 +929,120 @@
       document.getElementById('nextPage').disabled = STATE.currentPage >= totalPages;
     }
 
+    function populateSelect(id, values) {
+      const select = document.getElementById(id);
+      if (!select) return;
+      values.forEach(val => {
+        if (!val) return;
+        const opt = document.createElement('option');
+        opt.value = opt.textContent = val;
+        select.appendChild(opt);
+      });
+    }
+
     // =======================
-    // EVENTOS Y UTILIDADES
+    // CUSTOM MULTISELECT LOGIC
+    // =======================
+    function populateEdadCheckboxes(values) {
+      const container = document.getElementById('edadFilterOptions');
+      if (!container) return;
+      container.innerHTML = '';
+      values.forEach(val => {
+        if (!val) return;
+        const label = document.createElement('label');
+        label.className = 'multiselect-option';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = val;
+        checkbox.className = 'edad-checkbox';
+        checkbox.onchange = () => {
+          updateEdadHeader();
+          applyFilters();
+        };
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(val + ' meses'));
+        container.appendChild(label);
+      });
+    }
+
+    function toggleEdadDropdown() {
+      const opts = document.getElementById('edadFilterOptions');
+      opts.classList.toggle('show');
+    }
+
+    function updateEdadHeader() {
+      const checkboxes = document.querySelectorAll('.edad-checkbox:checked');
+      const header = document.getElementById('edadFilterHeader');
+      if (checkboxes.length === 0) {
+        header.textContent = 'Edad: Todas';
+      } else if (checkboxes.length === 1) {
+        header.textContent = 'Edad: ' + checkboxes[0].value;
+      } else {
+        header.textContent = 'Edad: ' + checkboxes.length + ' selec.';
+      }
+    }
+
+    // Cerrar dropdown al hacer clic fuera
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('edadSelectContainer');
+      const opts = document.getElementById('edadFilterOptions');
+      if (container && opts && !container.contains(e.target)) {
+        opts.classList.remove('show');
+      }
+    });
+
+    // =======================
+    // EVENTOS Y LÓGICA DE FILTROS/BÚSQUEDA
     // =======================
 
     // Debounce para la búsqueda (Evita lentitud al escribir)
     let searchTimeout;
-    document.getElementById('searchInput').addEventListener('input', (e) => {
+    document.getElementById('searchInput').addEventListener('input', () => {
       clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        const term = e.target.value.toLowerCase();
-
-        // Filtrado
-        STATE.filteredRows = STATE.rows.filter(row =>
-          row.some(cell => cell.toLowerCase().includes(term))
-        );
-
-        STATE.currentPage = 1;
-        renderTable();
-      }, 300); // Espera 300ms después de dejar de escribir
+      searchTimeout = setTimeout(applyFilters, 150); // Reducido a 150ms gracias a la optimización
     });
+
+    function applyFilters() {
+      const term = document.getElementById('searchInput').value.toLowerCase().trim();
+      const zona = document.getElementById('zonaFilter') ? document.getElementById('zonaFilter').value : '';
+      const zonaAgro = document.getElementById('zonaAgroFilter') ? document.getElementById('zonaAgroFilter').value : '';
+      const variedad = document.getElementById('variedadFilter') ? document.getElementById('variedadFilter').value : '';
+
+      const checkedBoxes = document.querySelectorAll('.edad-checkbox:checked');
+      const edadesFiltro = Array.from(checkedBoxes).map(cb => cb.value);
+
+      const mesCorte = document.getElementById('mesCorteFilter') ? document.getElementById('mesCorteFilter').value : '';
+
+      STATE.filteredRows = [];
+
+      for (let i = 0; i < STATE.rows.length; i++) {
+        const row = STATE.rows[i];
+
+        if (zona && STATE.zonaColumnIndex !== -1 && row[STATE.zonaColumnIndex] !== zona) continue;
+        if (zonaAgro && STATE.zonaAgroColumnIndex !== -1 && row[STATE.zonaAgroColumnIndex] !== zonaAgro) continue;
+        if (variedad && STATE.variedadColumnIndex !== -1 && row[STATE.variedadColumnIndex] !== variedad) continue;
+
+        if (edadesFiltro.length > 0 && STATE.edadColumnIndex !== -1) {
+          const val = Math.floor(parseFloat(row[STATE.edadColumnIndex])).toString();
+          if (!edadesFiltro.includes(val)) continue;
+        }
+
+        if (mesCorte !== "" && STATE.fechaProxColumnIndex !== -1) {
+          const dateStr = row[STATE.fechaProxColumnIndex];
+          const f = parseFecha(dateStr);
+          if (!f || f.getMonth() !== parseInt(mesCorte)) continue;
+        }
+
+        if (term && !STATE.searchableText[i].includes(term)) continue;
+
+        STATE.filteredRows.push(row);
+      }
+
+      STATE.currentPage = 1;
+      renderTable();
+    }
 
     document.getElementById('prevPage').addEventListener('click', () => {
       if (STATE.currentPage > 1) {
