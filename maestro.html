@@ -9,33 +9,90 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon-192.png">
   <title>Castilla Agrícola – Maestro</title>
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    rel="stylesheet">
+
   <style>
     :root {
-      --bg: #f8fafc;
-      --accent: #0f766e;
+      --bg: #0f172a;
+      --accent: #14b8a6;
       /* Darker teal for higher contrast outdoors */
-      --text: #020617;
+      --text: #f8fafc;
       /* Slate-950 for maximum contrast */
-      --header-bg: rgba(255, 255, 255, 0.75);
+      --header-bg: rgba(15, 23, 42, 0.75);
     }
 
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #e2e8f0, #cbd5e1, #ffffff);
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #1e1b4b);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       background-attachment: fixed;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
 
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .bg-shape {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+      animation: float 10s infinite ease-in-out alternate;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(40px, -40px) scale(1.1);
+      }
+    }
+
+    .shape1 {
+      top: -10%;
+      left: -10%;
+      width: 50vw;
+      height: 50vw;
+      background: #0ea5e9;
+    }
+
+    .shape2 {
+      bottom: -10%;
+      right: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: #10b981;
+    }
+
     /* Liquid Glassmorphism for Containers */
     .glass-panel {
-      background: rgba(255, 255, 255, 0.65);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     }
 
     /* Header estático y limpio con Glass */
@@ -68,12 +125,12 @@
     header .title {
       font-size: 1rem;
       font-weight: 700;
-      color: #1e293b;
+      color: #f8fafc;
     }
 
     header .version {
       font-size: 0.75rem;
-      color: #64748b;
+      color: #94a3b8;
     }
 
     /* Contenedor principal */
@@ -100,31 +157,37 @@
     select {
       width: 100%;
       padding: 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       font-size: 16px;
-      color: #0f172a;
+      color: #f8fafc;
       font-weight: 600;
       /* High contrast text */
       box-sizing: border-box;
       transition: all 0.2s;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
     input:focus,
     select:focus {
       outline: none;
       border-color: var(--accent);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+      background: #0f172a;
+      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.25);
+    }
+
+    option {
+      background-color: #1e293b;
+      color: #f8fafc;
     }
 
     select {
       flex: 1;
       appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f8fafc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
       background-repeat: no-repeat;
       background-position: right 1rem center;
       background-size: 1em;
@@ -133,9 +196,7 @@
 
     /* Tabla Responsiva */
     .table-container {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
       overflow: hidden;
       display: none;
     }
@@ -151,20 +212,23 @@
     }
 
     th {
-      background: #f1f5f9;
-      color: #475569;
-      font-weight: 600;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #e2e8f0;
+      font-weight: 700;
       text-align: left;
       padding: 12px;
       white-space: nowrap;
       position: sticky;
       top: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     td {
       padding: 10px 12px;
-      border-bottom: 1px solid #f1f5f9;
-      color: #334155;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
       white-space: nowrap;
     }
 
@@ -173,20 +237,20 @@
     }
 
     tr:hover {
-      background-color: #f8fafc;
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     /* Columna de Edad con fondo verde claro */
     td.edad-cell {
-      background-color: #dcfce7;
+      background-color: rgba(16, 185, 129, 0.2);
       font-weight: 800;
       /* Extra bold for outdoor contrast */
-      color: #064e3b;
+      color: #34d399;
     }
 
     th.edad-header {
-      background-color: #a7f3d0;
-      color: #064e3b;
+      background-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
       font-weight: 700;
     }
 
@@ -303,7 +367,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(4px);
       z-index: 1000;
       display: none;
@@ -316,28 +380,29 @@
     }
 
     .modal-content {
-      background: white;
+      background: #0f172a;
       border-radius: 16px;
       width: 100%;
       max-width: 500px;
       max-height: 90vh;
       /* Scroll if too long */
       overflow-y: auto;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
       display: flex;
       flex-direction: column;
       position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .modal-header {
       padding: 20px;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
-      background: white;
+      background: #0f172a;
       z-index: 10;
       border-radius: 16px 16px 0 0;
     }
@@ -345,11 +410,11 @@
     .modal-title {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #0f172a;
+      color: #f8fafc;
     }
 
     .close-btn {
-      background: #f1f5f9;
+      background: rgba(255, 255, 255, 0.1);
       border: none;
       border-radius: 50%;
       width: 32px;
@@ -358,15 +423,15 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: #64748b;
+      color: #94a3b8;
       font-weight: bold;
       font-size: 18px;
       transition: background 0.2s;
     }
 
     .close-btn:hover {
-      background: #cbd5e1;
-      color: #334155;
+      background: rgba(255, 255, 255, 0.2);
+      color: #f8fafc;
     }
 
     .modal-body {
@@ -378,7 +443,7 @@
       flex-direction: column;
       margin-bottom: 12px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #f8fafc;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .detail-item:last-child {
@@ -391,14 +456,14 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #64748b;
+      color: #94a3b8;
       margin-bottom: 4px;
       font-weight: 600;
     }
 
     .detail-value {
       font-size: 1rem;
-      color: #1e293b;
+      color: #e2e8f0;
       font-weight: 500;
       word-break: break-word;
       /* Prevent overflow on long texts */
@@ -410,7 +475,7 @@
     }
 
     tr.clickable-row:hover {
-      background-color: #f1f5f9;
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     /* Custom Multi-select */
@@ -436,7 +501,7 @@
       content: '▼';
       font-size: 10px;
       margin-left: auto;
-      color: #64748b;
+      color: #94a3b8;
     }
 
     .multiselect-options {
@@ -444,14 +509,14 @@
       top: 100%;
       left: 0;
       width: 100%;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
       max-height: 250px;
       overflow-y: auto;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       display: none;
       z-index: 50;
       margin-top: 4px;
@@ -467,12 +532,12 @@
       padding: 8px 12px;
       font-size: 0.8rem;
       cursor: pointer;
-      border-bottom: 1px solid #f1f5f9;
-      color: #1e293b;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
     }
 
     .multiselect-option:hover {
-      background: #f1f5f9;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .multiselect-option input {
@@ -483,6 +548,9 @@
 </head>
 
 <body>
+
+  <div class="bg-shape shape1"></div>
+  <div class="bg-shape shape2"></div>
 
   <header>
     <img src="icon-192.png" class="logo" alt="Logo"
@@ -509,42 +577,7 @@
     <div class="controls">
       <input id="searchInput" class="glass-panel" type="search" placeholder="🔍 Buscar suerte, zona, código..."
         autocomplete="off">
-      <div class="filters-row">
-        <select id="zonaFilter" class="glass-panel" onchange="applyFilters()">
-          <option value="">Zonas</option>
-        </select>
-        <select id="zonaAgroFilter" class="glass-panel" onchange="applyFilters()">
-          <option value="">Zonas Agro</option>
-        </select>
-        <select id="variedadFilter" class="glass-panel" onchange="applyFilters()">
-          <option value="">Variedades</option>
-        </select>
-      </div>
-      <div class="filters-row" style="margin-top: 8px;">
-        <div class="multiselect-container" id="edadSelectContainer">
-          <div class="glass-panel multiselect-header" id="edadFilterHeader" onclick="toggleEdadDropdown()">
-            Edad: Todas
-          </div>
-          <div class="multiselect-options" id="edadFilterOptions">
-            <!-- Checkboxes generados por JS -->
-          </div>
-        </div>
-        <select id="mesCorteFilter" class="glass-panel" onchange="applyFilters()">
-          <option value="">Corte: Todos</option>
-          <option value="0">Enero</option>
-          <option value="1">Febrero</option>
-          <option value="2">Marzo</option>
-          <option value="3">Abril</option>
-          <option value="4">Mayo</option>
-          <option value="5">Junio</option>
-          <option value="6">Julio</option>
-          <option value="7">Agosto</option>
-          <option value="8">Septiembre</option>
-          <option value="9">Octubre</option>
-          <option value="10">Noviembre</option>
-          <option value="11">Diciembre</option>
-        </select>
-      </div>
+
     </div>
 
     <div id="loadingMsg" class="loading">
@@ -560,9 +593,19 @@
       </div>
     </div>
 
-    <div id="pagination">
+    <div id="pagination" style="align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
       <button id="prevPage" class="nav-btn">Anterior</button>
-      <span id="pageInfo" style="font-size:14px;color:#475569;"></span>
+
+      <div
+        style="display: flex; flex-direction: column; align-items: center; gap: 6px; order: -1; width: 100%; margin-bottom: 8px;">
+        <div
+          style="background: linear-gradient(135deg, #0f766e, #059669); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.2);">
+          <span class="material-symbols-rounded" style="font-size: 20px;">pie_chart</span>
+          <span id="subtotalAreaInfo">Área Total: --</span>
+        </div>
+      </div>
+
+      <span id="pageInfo" style="font-size:14px;color:#475569; font-weight: 600; flex: 1; text-align: center;"></span>
       <button id="nextPage" class="nav-btn">Siguiente</button>
     </div>
 
@@ -599,10 +642,7 @@
       currentPage: 1,
       newWorker: null,
       edadColumnIndex: -1,
-      zonaColumnIndex: -1,
-      zonaAgroColumnIndex: -1,
-      variedadColumnIndex: -1,
-      fechaProxColumnIndex: -1
+      areaColumnIndex: -1
     };
 
     // =======================
@@ -797,17 +837,8 @@
         console.log(`✅ Columna "EDAD HOY M" encontrada en índice ${edadHoyIdx} - será reemplazada con cálculo`);
       }
 
-      // Buscar índices para filtros dinámicos
-      STATE.zonaColumnIndex = STATE.headers.findIndex(h => h.toUpperCase().trim() === 'ZONA');
-      STATE.variedadColumnIndex = variedadIdx;
-      STATE.zonaAgroColumnIndex = STATE.headers.findIndex(h => h.toUpperCase().trim() === 'ZONA AGROECOLOGICA');
-      STATE.fechaProxColumnIndex = STATE.headers.findIndex(h => h.toUpperCase().trim() === 'FECHA DEL PROXIMO CORTE');
-
-      // Sets para valores únicos de los filtros
-      const zonasSet = new Set();
-      const zonasAgroSet = new Set();
-      const variedadesSet = new Set();
-      const edadesSet = new Set();
+      // Buscar índice de área para subtotal
+      STATE.areaColumnIndex = STATE.headers.findIndex(h => h.toUpperCase().includes('AREA') || h.toUpperCase().includes('ÁREA'));
 
       // Procesamos filas (optimizando memoria y búsqueda)
       STATE.rows = [];
@@ -824,29 +855,11 @@
             row[edadHoyIdx] = edad; // Reemplazar el valor existente
           }
 
-          // Rellenar filtros
-          if (STATE.zonaColumnIndex !== -1 && row[STATE.zonaColumnIndex]) zonasSet.add(row[STATE.zonaColumnIndex]);
-          if (STATE.zonaAgroColumnIndex !== -1 && row[STATE.zonaAgroColumnIndex]) zonasAgroSet.add(row[STATE.zonaAgroColumnIndex]);
-          if (STATE.variedadColumnIndex !== -1 && row[STATE.variedadColumnIndex]) variedadesSet.add(row[STATE.variedadColumnIndex]);
-
-          if (STATE.edadColumnIndex !== -1 && row[STATE.edadColumnIndex]) {
-            const edadNum = Math.floor(parseFloat(row[STATE.edadColumnIndex]));
-            if (!isNaN(edadNum)) edadesSet.add(edadNum.toString());
-          }
-
           STATE.rows.push(row);
           // Precomputar texto en minúsculas para búsqueda instantánea O(1) comprobación
           STATE.searchableText.push(row.join(' ').toLowerCase());
         }
       }
-
-      // Poblar dropdowns de filtros
-      populateSelect('zonaFilter', Array.from(zonasSet).sort());
-      populateSelect('zonaAgroFilter', Array.from(zonasAgroSet).sort());
-      populateSelect('variedadFilter', Array.from(variedadesSet).sort());
-
-      const edadesSorted = Array.from(edadesSet).sort((a, b) => parseInt(a) - parseInt(b));
-      populateEdadCheckboxes(edadesSorted);
 
       if (variedadIdx !== -1 && fechaSiembraIdx !== -1 && edadHoyIdx !== -1) {
         console.log('✅ Cálculo de edad aplicado correctamente');
@@ -863,7 +876,7 @@
       document.querySelector('.table-container').classList.add('glass-panel');
       document.getElementById('pagination').style.display = 'flex';
 
-      renderTable();
+      applyFilters(); // Call applyFilters instead of renderTable to compute totals initially
     }
 
     // =======================
@@ -941,103 +954,46 @@
     }
 
     // =======================
-    // CUSTOM MULTISELECT LOGIC
-    // =======================
-    function populateEdadCheckboxes(values) {
-      const container = document.getElementById('edadFilterOptions');
-      if (!container) return;
-      container.innerHTML = '';
-      values.forEach(val => {
-        if (!val) return;
-        const label = document.createElement('label');
-        label.className = 'multiselect-option';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = val;
-        checkbox.className = 'edad-checkbox';
-        checkbox.onchange = () => {
-          updateEdadHeader();
-          applyFilters();
-        };
-
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(val + ' meses'));
-        container.appendChild(label);
-      });
-    }
-
-    function toggleEdadDropdown() {
-      const opts = document.getElementById('edadFilterOptions');
-      opts.classList.toggle('show');
-    }
-
-    function updateEdadHeader() {
-      const checkboxes = document.querySelectorAll('.edad-checkbox:checked');
-      const header = document.getElementById('edadFilterHeader');
-      if (checkboxes.length === 0) {
-        header.textContent = 'Edad: Todas';
-      } else if (checkboxes.length === 1) {
-        header.textContent = 'Edad: ' + checkboxes[0].value;
-      } else {
-        header.textContent = 'Edad: ' + checkboxes.length + ' selec.';
-      }
-    }
-
-    // Cerrar dropdown al hacer clic fuera
-    document.addEventListener('click', (e) => {
-      const container = document.getElementById('edadSelectContainer');
-      const opts = document.getElementById('edadFilterOptions');
-      if (container && opts && !container.contains(e.target)) {
-        opts.classList.remove('show');
-      }
-    });
-
-    // =======================
-    // EVENTOS Y LÓGICA DE FILTROS/BÚSQUEDA
+    // EVENTOS Y LÓGICA DE BÚSQUEDA
     // =======================
 
     // Debounce para la búsqueda (Evita lentitud al escribir)
     let searchTimeout;
     document.getElementById('searchInput').addEventListener('input', () => {
       clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(applyFilters, 150); // Reducido a 150ms gracias a la optimización
+      searchTimeout = setTimeout(applyFilters, 150);
     });
 
     function applyFilters() {
       const term = document.getElementById('searchInput').value.toLowerCase().trim();
-      const zona = document.getElementById('zonaFilter') ? document.getElementById('zonaFilter').value : '';
-      const zonaAgro = document.getElementById('zonaAgroFilter') ? document.getElementById('zonaAgroFilter').value : '';
-      const variedad = document.getElementById('variedadFilter') ? document.getElementById('variedadFilter').value : '';
-
-      const checkedBoxes = document.querySelectorAll('.edad-checkbox:checked');
-      const edadesFiltro = Array.from(checkedBoxes).map(cb => cb.value);
-
-      const mesCorte = document.getElementById('mesCorteFilter') ? document.getElementById('mesCorteFilter').value : '';
 
       STATE.filteredRows = [];
 
       for (let i = 0; i < STATE.rows.length; i++) {
-        const row = STATE.rows[i];
-
-        if (zona && STATE.zonaColumnIndex !== -1 && row[STATE.zonaColumnIndex] !== zona) continue;
-        if (zonaAgro && STATE.zonaAgroColumnIndex !== -1 && row[STATE.zonaAgroColumnIndex] !== zonaAgro) continue;
-        if (variedad && STATE.variedadColumnIndex !== -1 && row[STATE.variedadColumnIndex] !== variedad) continue;
-
-        if (edadesFiltro.length > 0 && STATE.edadColumnIndex !== -1) {
-          const val = Math.floor(parseFloat(row[STATE.edadColumnIndex])).toString();
-          if (!edadesFiltro.includes(val)) continue;
-        }
-
-        if (mesCorte !== "" && STATE.fechaProxColumnIndex !== -1) {
-          const dateStr = row[STATE.fechaProxColumnIndex];
-          const f = parseFecha(dateStr);
-          if (!f || f.getMonth() !== parseInt(mesCorte)) continue;
-        }
-
         if (term && !STATE.searchableText[i].includes(term)) continue;
+        STATE.filteredRows.push(STATE.rows[i]);
+      }
 
-        STATE.filteredRows.push(row);
+      // Calcular subtotal de area
+      let subtotalArea = 0;
+      if (STATE.areaColumnIndex !== -1) {
+        STATE.filteredRows.forEach(r => {
+          let val = r[STATE.areaColumnIndex];
+          if (val) {
+            // Eliminar puntos de miles y cambiar coma decimal por punto para parseFloat
+            let parsedStr = val.toString().replace(/\./g, '').replace(',', '.');
+            let a = parseFloat(parsedStr);
+            if (!isNaN(a)) subtotalArea += a;
+          }
+        });
+      }
+      const areaEl = document.getElementById('subtotalAreaInfo');
+      if (areaEl) {
+        if (STATE.areaColumnIndex !== -1) {
+          areaEl.textContent = `Área Total: ${subtotalArea.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ha`;
+        } else {
+          areaEl.textContent = '';
+        }
       }
 
       STATE.currentPage = 1;
